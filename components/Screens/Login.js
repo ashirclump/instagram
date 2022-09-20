@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CheckBox from '@react-native-community/checkbox';
 import Eye from 'react-native-vector-icons/Ionicons';
-import Input_1 from './Input_1';
+import Input_1 from '../Input_1';
 
 
 const Company = "MyApp";
@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
         <SafeAreaView>
             <ScrollView>
                 <View style={styles.main}>
-                    <Image source={require('../Images/Capture.png')} style={{ height: hp('8%'), width: wp('16%'), borderRadius: 35 }} />
+                    <Image source={require('../../Images/Capture.png')} style={{ height: hp('8%'), width: wp('16%'), borderRadius: 35 }} />
                     <Text style={styles.Heading}>Sign in to {Company}</Text>
                     <Text style={styles.Para}>Enter your details below.</Text>
 
@@ -106,7 +106,7 @@ const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     main: {
-        height: hp('100%'), width: wp('100%'), backgroundColor: '#F2F1F0', padding: ('5%')
+        width: wp('100%'), backgroundColor: '#F2F1F0', padding: ('5%')
     },
     Heading: {
         fontSize: 25, color: 'black', fontWeight: 'bold', marginTop: '8%'

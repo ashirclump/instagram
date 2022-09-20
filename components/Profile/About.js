@@ -16,23 +16,23 @@ const About = () => {
             }}>About</Text>
             <Text style={{ marginLeft: ('5%'), marginTop: ('5%'), 
             color:'#637381',width: wp('81%'),marginRight: ('5%') }}>
-              {Data_P[1].abt}</Text>
+              {Data_P[0].abt}</Text>
 
             <View style={styles.link}>
                 <Location size={18} name="ios-location" color="#637381" solid />
                 <Text style={styles.txt}>Live at</Text>
-                <Text style={styles.txt1}>{Data_P[1].location}</Text>
+                <Text style={styles.txt1}>{Data_P[0].location}</Text>
             </View>
 
             <View style={styles.link}>
                 <Email size={18} name="email" color="#637381" solid />
-                <Text style={styles.txt}>{Data_P[1].emailid}</Text>
+                <Text style={styles.txt}>{Data_P[0].emailid}</Text>
             </View>
 
             <View style={styles.link}>
                 <Bag size={18} name="shopping-bag" color="#637381" solid />
                 <Text style={styles.txt}>Manager at</Text>
-                <Text style={styles.txt1}>{Data_P[1].workad}</Text>
+                <Text style={styles.txt1}>{Data_P[0].workad}</Text>
             </View>
 
             <View style={styles.link}>

@@ -18,7 +18,7 @@ const SignUp = ({navigation}) => {
     <SafeAreaView>
         <ScrollView>
     <View style={styles.main}>
-        <Image source={require('../Images/Capture.png')} style={{height: hp('8%'),width: wp('16%'), borderRadius:35}}/>
+        <Image source={require('../../Images/Capture.png')} style={{height: hp('8%'),width: wp('16%'), borderRadius:35}}/>
         <Text style={styles.Heading}>Get started absolutely free. </Text>
         <Text style={styles.Para}>Free forever. No credit card needed.</Text>
 
@@ -80,7 +80,7 @@ const SignUp = ({navigation}) => {
 
 const styles = StyleSheet.create({
     main:{
-        height:hp('100%'), width:wp('100%'),backgroundColor:'#F2F1F0',padding:('5%')
+        width:wp('100%'),backgroundColor:'#F2F1F0',padding:('5%')
     },
     Heading:{
         fontSize:25,color:'black',fontWeight:'bold', marginTop:'8%'

@@ -33,7 +33,7 @@ rows:{
     flexDirection:'row'
 },
 input1:{
-    borderColor: 'black', borderRadius: 10,marginLeft:('3%'), height:hp('7.7%'), fontSize: 15
+    borderColor: 'black', borderRadius: 10,marginLeft:('3%'), height:hp('7.7%'), fontSize: 15,
 },
 });
 export default Input_1;

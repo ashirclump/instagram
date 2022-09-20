@@ -44,7 +44,7 @@ const PostType = () => {
 };
 const styles = StyleSheet.create({
     main:{
-        width: wp('90%'), backgroundColor: 'white', borderRadius: 20,
+        width: wp('90%'), backgroundColor: 'white', borderRadius: 20,marginTop:('8%')
     },
 });
 

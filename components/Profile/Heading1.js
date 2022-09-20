@@ -5,18 +5,18 @@ import Dot from 'react-native-vector-icons/Entypo';
 const Heading1 = (props) => {
   return (
     <View style={{ marginTop: ('12%') }}>
-          <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 20 }}>Profile</Text>
+          <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 20 }}>{props.h1}</Text>
               <View style={{ flexDirection: 'row', marginTop: ('5%') }}>
                 <TouchableOpacity>
                                 <Text style={{ color: 'black' }}>Dashboard</Text>
                 </TouchableOpacity>
                             <Dot name="dot-single" size={22} color="#637381" />
                 <TouchableOpacity>
-                                <Text style={{ color: 'black' }}>User</Text>
+                                <Text style={{ color: 'black' }}>{props.sName}</Text>
                 </TouchableOpacity>
                             <Dot name="dot-single" size={22} color="#637381" />
                 <TouchableOpacity>
-                                <Text style={{color:'#637381'}}>{props.sName}</Text>
+                                <Text style={{color:'#637381'}}>{props.userName}</Text>
                 </TouchableOpacity>
                </View>
     </View>
