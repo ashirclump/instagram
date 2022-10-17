@@ -26,7 +26,7 @@ import Send from 'react-native-vector-icons/Ionicons';
 import Navi from 'react-native-vector-icons/EvilIcons';
 
 
-
+// This is for backup profile screen 
 
 const Profile = () => {
 

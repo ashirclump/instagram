@@ -6,12 +6,15 @@ import Search from 'react-native-vector-icons/Feather';
 import Bell from 'react-native-vector-icons/FontAwesome';
 import Friend from 'react-native-vector-icons/FontAwesome5';
 import Data_P from './Profile/Data_P';
+import { DrawerActions } from '@react-navigation/native';
 
 
-const Header = (props) => {
+const Header = ({props,navigation}) => {
   return (
     <View style={{ flexDirection: 'row'}}>
-        <TouchableOpacity style={{}}>
+        <TouchableOpacity style={{}}
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
             <Navi name="navicon" size={40} color="#637381" />
         </TouchableOpacity>
 

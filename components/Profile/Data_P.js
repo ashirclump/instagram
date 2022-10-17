@@ -1,3 +1,5 @@
+
+
 const Data_P = [
     {
         flag:require('../../Images/Flag.png'),
@@ -19,6 +21,13 @@ const Data_P = [
         h1:'Create a new post',
         sName:'Blog',
         userName:'New Post',
+        
+    },
+
+    {
+        h1:'Blog',
+        sName:'Blog',
+        userName:'posts',
         
     }
 

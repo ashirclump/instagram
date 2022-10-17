@@ -1,49 +1,87 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View ,FlatList,TouchableOpacity,Image} from 'react-native'
+import React ,{useEffect,useState} from 'react'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Location from 'react-native-vector-icons/Ionicons';
 import Email from 'react-native-vector-icons/MaterialIcons';
 import Bag from 'react-native-vector-icons/MaterialIcons';
 import Data_P from './Data_P';
 
-
 const About = () => {
+
+  const [subSalonforWomen, setSubSalonforWomen] = useState([]);
+
+    useEffect(() => {
+      const requestOptions = {
+        method: 'GET',
+        redirect: 'follow',
+      };
+  
+      fetch(
+          // 'http://35.88.83.10/user_about_view/',
+          'http://10.0.2.2:8000/user_about_view/',
+  
+        requestOptions,
+      ).then(resp => {
+       
+          resp.json().then(resp => {
+            console.log(resp);
+          setSubSalonforWomen(resp);
+        });
+      });
+    }, []);
+
   return (
     <View style={styles.main}>
-            <Text style={{
-                fontSize: 16, fontWeight: 'bold',color:'#637381',
-                marginLeft: ('5%'), marginTop: ('10%')
-            }}>About</Text>
+    <Text style={{
+      fontSize: 16, fontWeight: 'bold',color:'#637381',
+      marginLeft: ('5%'), marginTop: ('10%')
+  }}>About</Text>
+    <FlatList
+    style={{ width: 400}}
+    
+    data={subSalonforWomen}
+    
+    keyExtractor={item => item._id}
+    listKey="YourListName"
+    renderItem={({item}) => (
+      <View>
+     
+    <View >
+            
             <Text style={{ marginLeft: ('5%'), marginTop: ('5%'), 
             color:'#637381',width: wp('81%'),marginRight: ('5%') }}>
-              {Data_P[0].abt}</Text>
+              {item.description}</Text>
 
             <View style={styles.link}>
                 <Location size={18} name="ios-location" color="#637381" solid />
                 <Text style={styles.txt}>Live at</Text>
-                <Text style={styles.txt1}>{Data_P[0].location}</Text>
+                <Text style={styles.txt1}>{item.location}</Text>
             </View>
 
             <View style={styles.link}>
                 <Email size={18} name="email" color="#637381" solid />
-                <Text style={styles.txt}>{Data_P[0].emailid}</Text>
+                <Text style={styles.txt}>{item.email}</Text>
             </View>
 
             <View style={styles.link}>
                 <Bag size={18} name="shopping-bag" color="#637381" solid />
                 <Text style={styles.txt}>Manager at</Text>
-                <Text style={styles.txt1}>{Data_P[0].workad}</Text>
+                <Text style={styles.txt1}>{item.workad_at}</Text>
             </View>
 
             <View style={styles.link}>
                 <Bag size={18} name="shopping-bag" color="#637381" solid />
                 <Text style={styles.txt }>Studied at</Text>
                 <Text style={{ marginLeft: ('2%'), fontWeight: 'bold', 
-                color:'#637381',marginBottom: ('8%') }}>{Data_P[1].Studied}</Text>
+                color:'#637381',marginBottom: ('8%') }}>{item.Studied_at}</Text>
             </View>
-        
+            
                     </View>
-  )
+                    </View>
+                    )}
+/>
+</View>
+  );
 }
 
 export default About
