@@ -5,6 +5,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Input_1 from '../Input_1';
 import Eye from 'react-native-vector-icons/Ionicons';
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const SignUp = ({navigation}) => {
@@ -161,19 +162,23 @@ const postUser = ()=> {
 
   fetch(
    
-  'http://10.0.2.2:8000/register/',
+  'http://35.90.113.221/register/',
   // 'http://35.90.113.221/register/',
     requestOptions,
   )
     .then(result => result.json())
-    .then(resp => {
+    .then(async (resp) => {
       console.log('register ', resp)
-      if (resp) {
-
-        alert(resp.message);
-        console.log(resp.id);
-        navigation.navigate('Aboutpost',{id:resp.id});
-      }
+      if (resp.message) {
+         
+          await AsyncStorage.setItem('resp',JSON.stringify (resp));
+        
+          // alert(result.data.message);
+          alert(resp.message);
+          console.log(resp.id);
+          navigation.navigate('Aboutpost');
+          // navigation.replace('MyDrawer');
+        }
         else{
           alert("network error");
         }              
@@ -228,7 +233,7 @@ const handleCheckEmail = text => {
                         placeholderTextColor={'#C4C4C4'}
                         secureTextEntry={visible}
                         style={{
-                        margin:('3%'), width:wp('70%'),
+                        margin:('0%'), width:wp('70%'),
                         }}
                         // onChangeText={onChangePassword}
                         onChangeText={onChangePassword}

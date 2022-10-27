@@ -7,6 +7,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Search from 'react-native-vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
 import Blog_Post from './Blog_Post';
+import { responsiveFontSizes } from '@material-ui/core';
 
 
 
@@ -41,7 +42,7 @@ const Posts = ({props,navigation}) => {
                         fontWeight: 'bold', fontSize: 16,
                         color: '#ffffff', alignSelf: 'center',
                     }}
-                    onPress={() => { navigation.navigate("NewPost") }}
+                    onPress={() => { navigation.navigate("NewPost",{id:59}) }}
                     
                     >+ New Post</Text>
                 </TouchableOpacity>
@@ -73,16 +74,8 @@ const Posts = ({props,navigation}) => {
         }}
         />
         </View>
-        
-            <Blog_Post/>
-            <Blog_Post/>
-
-
-
-
-    
-
-        </ScrollView>
+        <Blog_Post />
+       </ScrollView>
     </View>
 
   

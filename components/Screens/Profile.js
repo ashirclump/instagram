@@ -24,18 +24,32 @@ const Profile = ({props,navigation}) => {
     const [subSalonforWomen, setSubSalonforWomen] = useState([]);
     const [two, setTwo] = useState([]);
 
-    useEffect(() => {
+   
+        useEffect(async () => {
+      
+            let parsed = await AsyncStorage.getItem('resp');  
+     
+    let tokens = JSON.parse(parsed);
+    
+    const token=tokens.access
+            
       const requestOptions = {
         method: 'GET',
         redirect: 'follow',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`, 
+            
+        },
       };
   
       fetch(
-          'http://10.0.2.2:8000/post_view/',
+          'http://35.90.113.221/post_view_user/',
          requestOptions,
       ).then(resp => {
        resp.json().then(resp => {
-            // console.log('postview',resp[0].comment_set);
+            console.log('postview',resp);
           setSubSalonforWomen(resp);
           setTwo(resp[0])
         });
@@ -43,9 +57,9 @@ const Profile = ({props,navigation}) => {
     }, []);
     
     const handleLogout = async () => {
-        const dataToken = await AsyncStorage.getItem('AccessToken');
+        const dataToken = await AsyncStorage.getItem('resp');
         if (!dataToken) {
-          console.log("excellent",'AccessToken');
+          console.log("logout",dataToken);
           
         } else {
           
@@ -73,9 +87,9 @@ const Profile = ({props,navigation}) => {
              </TouchableOpacity>
                 
                 <Box_P
-                
-                        username={Data_P[0].userName}
-                        pos={Data_P[0].position}/>
+                // username={Data_P[0].userName}
+                        // pos={Data_P[0].position}
+                        />
 
                 
 

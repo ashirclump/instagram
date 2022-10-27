@@ -20,6 +20,8 @@ import Forgot from './components/Screens/Forgot';
 import Aboutpost from './components/Screens/Aboutpost'
 import Linkpost from './components/Screens/Linkpost'
 import Pic from './components/Screens/Pic'
+import Splash from './components/Screens/Splash'
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -28,41 +30,12 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
 
-//   useEffect( async () => {
-// const dataToken = await AsyncStorage.getItem('token');
-//       if (dataToken) {
-       
-//          console.log("app.js", result.data.access);
-//         // navigation.replace('Login');
-//       } else {
-       
-//         // navigation.navigate('MyDrawer');
-//       }
-    
-//   }, []);
-// useEffect(() => {
-//   setTimeout(() => {
-//     handleGetToken();
-//   }, 2000);
-// });
 
-// const handleGetToken = async () => {
-//   const dataToken = await AsyncStorage.getItem('token');
-//   if (dataToken) {
-//     // console.log("excellent");
-//     alert("appp successful");
-//      console.log("apps", dataToken);
-//     navigation.replace('Login');
-//   } else {
-//     // navigation.replace('MyDrawer');
-//     navigation.navigate('MyDrawer');
-//   }
-// };
   return (
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
-     
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Forgot" component={Forgot} />

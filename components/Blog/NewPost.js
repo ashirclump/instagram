@@ -1,3 +1,7 @@
+
+
+
+
 import {
   StyleSheet,
   Text,
@@ -17,73 +21,185 @@ import Underline from 'react-native-vector-icons/Feather';
 import List from 'react-native-vector-icons/FontAwesome';
 import Image from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Input_2 from '../Input_2';
+import Input from '../Input';
+import ImagePicker from 'react-native-image-crop-picker';
 
-const NewPost = ({navigation}) => {
-  const [post, onChangePost] = useState('');
-  const [des, onChangeDes] = useState('');
-  const [con, onChangeCon] = useState('');
-  const [meta, onChangeMeta] = useState('');
 
-  const richText = React.useRef();
+ 
+  const NewPost = props => {
+    const {navigation, route} = props;
+  const [post_name, onChangePost] = useState('');
+  const [tag_name, onChangeDes] = useState('');
+  const [post_content, onChangeCon] = useState('');
+  const [post_header, onChangeMeta] = useState('');
+  const [Fname, onChangeFname] = useState('');
+  const [blog_name, onChangeLname] = useState('');
+  // const [user,onChangeUser] = useState(10);
+  const [users,onChangeUsers] = useState('');
+  const [uri, setUri] = useState(props.source?.uri || undefined);
+  
+  // const [user, setUser] = useState(`${props.route.params.id}`);
+  // const [images, setImages] = useState({
+  //   uri: `data:${image};base64,${image}`,
+  // });
+ 
+ 
+  const [singleFile, setSingleFile] = useState('');
+  
+
+
+  const [image, setImage] = useState(null);
+const [uploading, setUploading] = useState(false);
+const [transferred, setTransferred] = useState(0);
+
+
+
+  const [images, setImages] = useState(props.source?.images || undefined);
+  const openPicker = () => {
+    ImagePicker.openPicker({
+      // width: 300,
+      // height: 300,
+      // cropping: true,
+    }).then(image => {
+      setUri(image.path);
+      setImages(image.mime);
+      console.log(image);
+      props.onChange?.(image);
+    });
+};
+  
+
+
+const postUser =async ()=> {
+  // const dataToken = await AsyncStorage.getItem('user');
+  //   const token = await AsyncStorage.getItem('access');
+  //   const oken = await AsyncStorage.getItem('token');
+  //      const user= dataToken;
+      //  const dataToken = await AsyncStorage.getItem('token');
+      const cool = await AsyncStorage.getItem('respp');  
+      console.log("ddd",cool)
+      // resp[0].user
+      // let newest = JSON.parse(parsed);
+      // const user=users.id
+      // const dd=newest.user
+      // console.log(user)
+      // console.log(token)
+
+       let parsed = await AsyncStorage.getItem('resp');  
+      //  let users = JSON.parse(parsed);  
+       console.log(parsed)
+       let tokens = JSON.parse(parsed);
+       const user=users.id
+       const token=tokens.access
+       console.log(user)
+       console.log(token)
+      
+  const item ={post_name,
+    tag_name,
+    blog_name,
+    user,
+    post_header,
+    post_content,
+    };
+    // console.log(item);
+    
+  const requestOptions = {
+    method: 'POST',
+    redirect: 'follow',
+
+    headers: {
+      'Content-Type': 'application/json;',
+          Accept: 'application/json',
+      Authorization:  `Bearer ${token}`},
+   
+   
+    body: JSON.stringify (item)
+  };
+
+  fetch(
+   
+  'http://35.90.113.221/create_blog/',
+  // 'http://35.90.113.221/register/',
+    requestOptions,
+  )
+    .then(result => result.json())
+    .then(resp => {
+      console.log('newpost ', resp)
+      if (resp.user) {
+
+        alert("successful post");
+      
+        navigation.navigate('Posts');
+      }
+        else{
+          alert("filled all the fields");
+        }              
+                  
+    })
+    .catch(error => {
+      console.error(error);
+    });
+};
 
   // this is our post screen
 
-  const Input = props => {
-    return (
-      <View
-        style={{
-          width: wp('85%'),
-          marginTop: '5%',
-          // marginLeft: '3%',
-          height: hp('15%'),
-          borderRadius: 10,
-          borderWidth: 1.5,
-          borderColor: '#ECECEC',
-          fontSize: 15,
-        }}>
-        <TextInput
-          placeholderTextColor={'#C4C4C4'}
-          placeholder={props.place}
-          multiline={true}
-          onChangeText={props.onChan}
-          value={props.val}
-        />
-      </View>
-    );
-  };
+  // const Input = props => {
+  //   return (
+  //     <View
+  //       style={{
+  //         width: wp('85%'),
+  //         marginTop: '5%',
+  //         // marginLeft: '3%',
+  //         height: hp('15%'),
+  //         borderRadius: 10,
+  //         borderWidth: 1.5,
+  //         borderColor: '#ECECEC',
+  //         fontSize: 15,
+  //       }}>
+  //       <TextInput
+  //         placeholderTextColor={'#C4C4C4'}
+  //         placeholder={props.place}
+  //         multiline={true}
+  //         onChangeText={props.change}
+  //         value={props.val}
+  //       />
+  //     </View>
+  //   );
+  // };
 
-  const Input_2 = props => {
-    return (
-      <View>
-        <TextInput
-          // style={props.whi}
-          autoCapitalize="none"
-          autoCorrect={false}
-          placeholder={props.title}
-          placeholderTextColor={'#C4C4C4'}
-          backgroundColor="white"
-          onChangeText={props.change}
-          value={props.vale}
-          style={{
-            borderColor: 'black',
-            borderRadius: 10,
-            // marginLeft: '3%',
-            height: hp('7.7%'),
-            fontSize: 15,
-            marginTop: '4%',
-            borderWidth: 1.5,
-            width: wp('85%'),
-            borderColor: '#ECECEC',
-          }}
-        />
-      </View>
-    );
-  };
+  // const Input_2 = props => {
+  //   return (
+  //     <View>
+  //       <TextInput
+  //         // style={props.whi}
+  //         autoCapitalize="none"
+  //         autoCorrect={false}
+  //         placeholder={props.title}
+  //         placeholderTextColor={'#C4C4C4'}
+  //         backgroundColor="white"
+  //         onChangeText={props.changed}
+  //         value={props.vale}
+  //         style={{
+  //           borderColor: 'black',
+  //           borderRadius: 10,
+  //           // marginLeft: '3%',
+  //           height: hp('7.7%'),
+  //           fontSize: 15,
+  //           marginTop: '4%',
+  //           borderWidth: 1.5,
+  //           width: wp('85%'),
+  //           borderColor: '#ECECEC',
+  //         }}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   const Toggle = props => {
     const [isEnabled, setIsEnabled] = useState(false);
@@ -119,8 +235,8 @@ const NewPost = ({navigation}) => {
   // main
 
   return (
-    <SafeAreaView>
-      <ScrollView>
+    
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{padding: '5%'}}>
           <Header />
           <Heading1
@@ -131,12 +247,12 @@ const NewPost = ({navigation}) => {
 
           <View style={styles.input}>
             <Input_2
-              title="Post"
-              vale={post}
-              onChange={onChangePost}
+              title="# Post"
+              vale={tag_name}
+              changed={onChangeDes}
               
             />
-            <Input place="Description" onChan={onChangeDes} val={des} />
+            <Input place="Description" change={onChangeLname} val={blog_name} />
 
             <Text style={styles.title}>Content</Text>
 
@@ -178,7 +294,7 @@ const NewPost = ({navigation}) => {
               <TextInput
                 multiline={true}
                 onChangeText={onChangeCon}
-                value={con}
+                value={post_content}
               />
             </View>
             <Text style={styles.title}> Cover </Text>
@@ -192,16 +308,25 @@ const NewPost = ({navigation}) => {
                 borderRadius: 10,
               }}>
               <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <ImageBackground
+              <ImageBackground
                   source={require('../../Images/Drag.png')}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '4%',
-                    width: wp('50%'),
-                    height: hp('20%'),
-                    opacity: 150,
-                  }}></ImageBackground>
+                  style={styles.default}
+                  ></ImageBackground>
+                <ImageBackground
+                  // source={require('../../Images/Drag.png')}
+                  style={styles.avatar}
+                  // {...props}
+                    source={uri ? {uri} : props.source}
+                    // source={{uri:images}}
+                  // style={{
+                  //   justifyContent: 'center',
+                  //   alignItems: 'center',
+                  //   marginTop: '4%',
+                  //   width: wp('50%'),
+                  //   height: hp('20%'),
+                  //   opacity: 150,
+                  // }}
+                  ></ImageBackground>
               </View>
               <View>
                 <Text
@@ -230,11 +355,13 @@ const NewPost = ({navigation}) => {
                     alignSelf: 'center',
                     marginHorizontal: '1%',
                   }}>
-                  click here to{' '}
+                  click here to
+                  <TouchableOpacity onPress={openPicker}>
                   <Text
                     style={{color: '#F45CA5', textDecorationLine: 'underline'}}>
                     browse
-                  </Text>{' '}
+                  </Text>
+                  </TouchableOpacity>
                   through your machine
                 </Text>
               </View>
@@ -252,14 +379,14 @@ const NewPost = ({navigation}) => {
                 justifyContent: 'space-evenly',
                 flexDirection: 'column',
               }}>
-              <Input_2 title="Tags" whi={styles.new} change />
-              <Input_2 title="Meta Title" />
+              <Input_2 title="Tags" whi={styles.new} changed={onChangeFname} val={Fname} />
+              <Input_2 title="Meta Title" changed={onChangePost} val={post_name}/>
               <Input
                 place="Meta Description"
-                onChan={onChangeMeta}
-                val={meta}
+                change={onChangeMeta}
+                val={post_header}
               />
-              <Input_2 title="Meta Keyword" />
+              <Input_2 title="Meta Keyword" changed={onChangeUsers} val={users}/>
             </View>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -268,16 +395,15 @@ const NewPost = ({navigation}) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btn, {backgroundColor: '#F45CA5'}]}
-                onPress={() => {
-                  navigation.navigate('Posts');
-                }}>
+                onPress={() => postUser()}
+                  // navigation.navigate('Posts');
+                  >
                 <Text style={[styles.texts, {color: 'white'}]}>Post</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
   );
 };
 
@@ -340,201 +466,210 @@ const styles = StyleSheet.create({
 
     // alignSelf:'flex-end'
   },
+  avatar: {
+    height: 110,
+    width: 110,
+    justifyContent: 'center',
+    borderRadius: 80,
+    marginTop: '4%',
+    marginBottom: 20,
+    alignContent: 'center',
+    alignSelf: 'center',
+    //  marginLeft:15
+   
+  },
+  default: {
+    height: 110,
+    width: 110,
+    justifyContent: 'center',
+    borderRadius: 80,
+    marginBottom: 20,
+    alignContent: 'center',
+    alignSelf: 'center',
+    marginTop: '4%',
+    opacity: 150,
+    
+    position:'absolute'
+    
+  },
 });
 export default NewPost;
 
-// import React, { Component } from 'react';
-// import { View, StyleSheet, Keyboard
-// , TouchableWithoutFeedback, Text
-// , KeyboardAvoidingView } from 'react-native';
+ 
 
-// import  CNRichTextEditor , { CNToolbar, getInitialObject , getDefaultStyles } from "react-native-cn-richtext-editor";
+// import React, { useState } from 'react';
+// // Import core components
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   TouchableOpacity
+// } from 'react-native';
+// // import DocumentPicker from 'react-native-document-picker';
+// import DocumentPicker, { types } from 'react-native-document-picker';
+ 
 
-// const defaultStyles = getDefaultStyles();
+// const App = props => {
+//   const {navigation, route} = props;
+  
+//   const [singleFile, setSingleFile] = useState(59);
+//   const [user,onChangeUser] = useState(`${props.route.params.id}`);
 
-// class App extends Component {
+//   const uploadImage = async () => {
+//     // const item = {user};
+//     // Check if any file is selected or not
+//     if (singleFile != null) {
+//       // If file selected then create FormData
+//       const fileToUpload = singleFile;
+//       const images = new FormData();
+//       images.append('name', 'Image Upload',);
+//       images.append('file_attachment', fileToUpload,);
+//       // Please change file upload URL
+//       let res = await fetch(
+//         'http://35.90.113.221/create_blog/',
+//         {
+//           method: 'post',
+//           body:images,
+//           body: ({user:59,images}),
+//           headers: {
+//             'Content-Type': 'multipart/form-data; ',
+//             // 'Content-Type': 'application/json ',
+          
+//                         Accept: 'application/json',
+//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MDE0MzczLCJpYXQiOjE2NjYwMTM3NzMsImp0aSI6ImQ3YTUzZWUwMmIzMDRlMzViZjY4MTYzNzYwOTA5Zjc0IiwidXNlcl9pZCI6NTl9.PxAZ9yYQRmQKR4TXGSRRMuLb8iyTVzJiG6VJUEWxkzE',
 
-//     constructor(props) {
-//         super(props);
+//           },
+//           headers: {
+//             // 'Content-Type': 'multipart/form-data; ',
+//             'Content-Type': 'application/json ',
+          
+//                         // Accept: 'application/json',
+//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MDE0MzczLCJpYXQiOjE2NjYwMTM3NzMsImp0aSI6ImQ3YTUzZWUwMmIzMDRlMzViZjY4MTYzNzYwOTA5Zjc0IiwidXNlcl9pZCI6NTl9.PxAZ9yYQRmQKR4TXGSRRMuLb8iyTVzJiG6VJUEWxkzE',
 
-//         this.state = {
-//             selectedTag : 'body',
-//             selectedStyles : [],
-//             value: [getInitialObject()]
-//         };
-
-//         this.editor = null;
+//           },
+         
+//         }
+//       );
+//       let responseJson = await res.json();
+//       if (responseJson) {
+//         alert('Upload Successful');
+//         console.log(responseJson);
+//       }
+//     } else {
+//       // If no file selected the show alert
+//       alert('Please Select File first');
 //     }
-
-//     onStyleKeyPress = (toolType) => {
-//         this.editor.applyToolbar(toolType);
+//   };
+ 
+//   const selectFile = async () => {
+//     // Opening Document Picker to select one file
+//     try {
+//       // const user=59;
+//       const res = await DocumentPicker.pick({
+//         // Provide which type of file you want user to pick
+//         type: [DocumentPicker.types.allFiles],
+//         // There can me more options as well
+//         // DocumentPicker.types.allFiles
+//         // DocumentPicker.types.images
+//         // DocumentPicker.types.plainText
+//         // DocumentPicker.types.audio
+//         // DocumentPicker.types.pdf
+//       });
+//       // Printing the log realted to the file
+//       const user ="59";
+//       console.log(user);
+//       console.log('res : ' + JSON.stringify(res));
+//       // Setting the state to show single file attributes
+//       setSingleFile(res,user);
+//     } catch (err) {
+//       setSingleFile(null);
+//       // Handling any exception (If any)
+//       if (DocumentPicker.isCancel(err)) {
+//         // If user canceled the document selection
+//         alert('Canceled');
+//       } else {
+//         // For Unknown Error
+//         alert('Unknown Error: ' + JSON.stringify(err));
+//         throw err;
+//       }
 //     }
-
-//     onSelectedTagChanged = (tag) => {
-//         this.setState({
-//             selectedTag: tag
-//         })
-//     }
-
-//     onSelectedStyleChanged = (styles) => {
-//         this.setState({
-//             selectedStyles: styles,
-//         })
-//     }
-
-//     onValueChanged = (value) => {
-//         this.setState({
-//             value: value
-//         });
-//     }
-
-//     render() {
-//         return (
-//             <KeyboardAvoidingView
-//             behavior="padding"
-//             enabled
-//             keyboardVerticalOffset={0}
-//             style={{
-//                 flex: 1,
-//                 paddingTop: 20,
-//                 backgroundColor:'#eee',
-//                 flexDirection: 'column',
-//                 justifyContent: 'flex-end',
-//             }}
-//             >
-//                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-//                     <View style={styles.main}>
-//                         <CNRichTextEditor
-//                         underline={true}
-//                             ref={input => this.editor = input}
-//                             onSelectedTagChanged={this.onSelectedTagChanged}
-//                             onSelectedStyleChanged={this.onSelectedStyleChanged}
-//                             value={this.state.value}
-//                             style={{ backgroundColor : '#fff',height:100,}}
-//                             styleList={defaultStyles}
-//                             onValueChanged={this.onValueChanged}
-//                         />
-//                     </View>
-//                 </TouchableWithoutFeedback>
-
-//                 <View style={{
-//                     minHeight: 35
-//                 }}>
-
-//                     <CNToolbar
-//                                 style={{
-//                                     height:35,
-//                                 }}
-//                                 iconSetContainerStyle={{
-//                                     flexGrow: 1,
-//                                     justifyContent: 'space-evenly',
-//                                     alignItems: 'center',
-//                                 }}
-//                                 size={30}
-//                                 iconSet={[
-//                                     {
-//                                         type: 'tool',
-//                                         iconArray: [{
-//                                             toolTypeText: 'image',
-//                                             iconComponent:
-//                                                 <Text style={styles.toolbarButton}>
-//                                                 image
-//                                                 </Text>
-//                                         }]
-//                                     },
-//                                     {
-//                                         type: 'tool',
-//                                         iconArray: [{
-//                                             toolTypeText: 'bold',
-//                                             buttonTypes: 'style',
-//                                             iconComponent:
-//                                                 <Text style={styles.toolbarButton}>
-//                                                 bold
-//                                                 </Text>
-//                                         }]
-//                                     },
-//                                     {
-//                                         type: 'seperator'
-//                                     },
-//                                     {
-//                                         type: 'tool',
-//                                         iconArray: [
-//                                             {
-//                                                 toolTypeText: 'body',
-//                                                 buttonTypes: 'tag',
-//                                                 iconComponent:
-//                                                     <Text style={styles.toolbarButton}>
-//                                                     body
-//                                                     </Text>
-//                                             },
-//                                         ]
-//                                     },
-//                                     {
-//                                         type: 'tool',
-//                                         iconArray: [
-//                                             {
-//                                                 toolTypeText: 'ul',
-//                                                 buttonTypes: 'tag',
-//                                                 iconComponent:
-//                                                     <Text style={styles.toolbarButton}>
-//                                                     ul
-//                                                     </Text>
-//                                             }
-//                                         ]
-//                                     },
-//                                     {
-//                                         type: 'tool',
-//                                         iconArray: [
-//                                             {
-//                                                 toolTypeText: 'ol',
-//                                                 buttonTypes: 'tag',
-//                                                 iconComponent:
-//                                                     <Text style={styles.toolbarButton}>
-//                                                     ol
-//                                                     </Text>
-//                                             }
-//                                         ]
-//                                     },
-//                                 ]}
-//                                 selectedTag={this.state.selectedTag}
-//                                 selectedStyles={this.state.selectedStyles}
-//                                 onStyleKeyPress={this.onStyleKeyPress}
-//                             />
-//                 </View>
-//         </KeyboardAvoidingView>
-//         );
-//     }
-
-// }
+//   };
+//   return (
+//     <View style={styles.mainBody}>
+//       <View style={{ alignItems: 'center' }}>
+//         <Text style={{ fontSize: 30, textAlign: 'center' }}>
+//           React Native File Upload Example
+//         </Text>
+//         <Text
+//           style={{
+//             fontSize: 25,
+//             marginTop: 20,
+//             marginBottom: 30,
+//             textAlign: 'center',
+//           }}>
+//           www.aboutreact.com
+//         </Text>
+//       </View>
+//       {/*Showing the data of selected Single file*/}
+//       {singleFile != null ? (
+//         <Text style={styles.textStyle}>
+//           File Name: {singleFile.name ? singleFile.name : ''}
+//           {'\n'}
+//           Type: {singleFile.type ? singleFile.type : ''}
+//           {'\n'}
+//           File Size: {singleFile.size ? singleFile.size : ''}
+//           {'\n'}
+//           URI: {singleFile.uri ? singleFile.uri : ''}
+//           {'\n'}
+//         </Text>
+//       ) : null}
+//       <TouchableOpacity
+//         style={styles.buttonStyle}
+//         activeOpacity={0.5}
+//         onPress={selectFile}>
+//         <Text style={styles.buttonTextStyle}>Select File</Text>
+//       </TouchableOpacity>
+//       <TouchableOpacity
+//         style={styles.buttonStyle}
+//         activeOpacity={0.5}
+//         onPress={uploadImage}>
+//         <Text style={styles.buttonTextStyle}>Upload File</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+ 
 // const styles = StyleSheet.create({
-//     main: {
-//         flex: 1,
-//         height:10,
-//         marginTop: 10,
-//         paddingLeft: 30,
-//         paddingRight: 30,
-//         paddingBottom: 1,
-//         alignItems: 'stretch',
-
-//     },
-//     toolbarButton: {
-//         fontSize: 20,
-//         width: 28,
-//         height: 28,
-//         // textAlign: 'center'
-//     },
-//     italicButton: {
-//         fontStyle: 'italic'
-//     },
-//     boldButton: {
-//         fontWeight: 'bold'
-//     },
-//     underlineButton: {
-//         textDecorationLine: 'underline'
-//     },
-//     lineThroughButton: {
-//         textDecorationLine: 'line-through'
-//     },
+//   mainBody: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     padding: 20,
+//   },
+//   buttonStyle: {
+//     backgroundColor: '#307ecc',
+//     borderWidth: 0,
+//     color: '#FFFFFF',
+//     borderColor: '#307ecc',
+//     height: 40,
+//     alignItems: 'center',
+//     borderRadius: 30,
+//     marginLeft: 35,
+//     marginRight: 35,
+//     marginTop: 15,
+//   },
+//   buttonTextStyle: {
+//     color: '#FFFFFF',
+//     paddingVertical: 10,
+//     fontSize: 16,
+//   },
+//   textStyle: {
+//     backgroundColor: '#fff',
+//     fontSize: 15,
+//     marginTop: 16,
+//     marginLeft: 35,
+//     marginRight: 35,
+//     textAlign: 'center',
+//   },
 // });
-
+ 
 // export default App;

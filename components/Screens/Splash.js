@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View,Image} from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function Splash({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       handleGetToken();
-    }, 2000);
+    }, 1000);
   });
 
   const handleGetToken = async () => {
-    const dataToken = await AsyncStorage.getItem('AccessToken');
+    const dataToken = await AsyncStorage.getItem('resp');
     if (!dataToken) {
       navigation.replace('Login');
     } else {
@@ -20,7 +21,9 @@ export default function Splash({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Splash</Text>
+    <Image source={require('../../Images/Capture.png')} style={{ height: hp('8%'), width: wp('16%'), borderRadius: 35 }} />
+    <Text style={styles.text}>Welcome To</Text>
+    <Text style={styles.text}>My app</Text>
     </View>
   );
 }
@@ -29,11 +32,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   text: {
     fontWeight: '800',
     fontSize: 30,
-    color: 'white',
+    color: 'black',
   },
 });

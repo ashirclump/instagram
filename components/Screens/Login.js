@@ -2,13 +2,13 @@ import {
     Image, SafeAreaView, ScrollView, StyleSheet, Text, View, TextInput,
     TouchableOpacity,FlatList
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState,useEffect } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CheckBox from '@react-native-community/checkbox';
 import Eye from 'react-native-vector-icons/Ionicons';
 import Input_1 from '../Input_1';
 import {user_login} from './user_api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Company = "MyApp";
@@ -20,7 +20,7 @@ const Login = ({ navigation }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [seePassword, setSeePassword] = useState(true);
       const [checkValidEmail, setCheckValidEmail] = useState(false);
-      const [userToken, setUserToken] = useState('');
+     
 // const postUser = ()=> {
 //        const requestOptions = {
 //            method: 'POST',
@@ -150,24 +150,24 @@ const handleCheckEmail = text => {
 
   const checkPasswordValidity = value => {
     const isNonWhiteSpace = /^\S*$/;
-    // if (!isNonWhiteSpace.test(value)) {
-    //   return 'Password must not contain Whitespaces Invalid credentials,';
-    // }
+    if (!isNonWhiteSpace.test(value)) {
+      return 'Password must not contain Whitespaces Invalid credentials,';
+    }
 
-    // const isContainsUppercase = /^(?=.*[A-Z]).*$/;
-    // if (!isContainsUppercase.test(value)) {
-    //   return 'Password must have at least one Uppercase Character Invalid credentials,.';
-    // }
+    const isContainsUppercase = /^(?=.*[A-Z]).*$/;
+    if (!isContainsUppercase.test(value)) {
+      return 'Password must have at least one Uppercase Character Invalid credentials,.';
+    }
 
-    // const isContainsLowercase = /^(?=.*[a-z]).*$/;
-    // if (!isContainsLowercase.test(value)) {
-    //   return 'Password must have at least one Lowercase Character Invalid credentials,.';
-    // }
+    const isContainsLowercase = /^(?=.*[a-z]).*$/;
+    if (!isContainsLowercase.test(value)) {
+      return 'Password must have at least one Lowercase Character Invalid credentials,.';
+    }
 
-    // const isContainsNumber = /^(?=.*[0-9]).*$/;
-    // if (!isContainsNumber.test(value)) {
-    //   return 'Password must contain at least one Digit Invalid credentials,.';
-    // }
+    const isContainsNumber = /^(?=.*[0-9]).*$/;
+    if (!isContainsNumber.test(value)) {
+      return 'Password must contain at least one Digit Invalid credentials,.';
+    }
 
     // const isValidLength = /^.{8,16}$/;
     // if (!isValidLength.test(value)) {
@@ -175,48 +175,63 @@ const handleCheckEmail = text => {
     // }
   // return "invalid";
   };
-  const handleLogin = () => {
+  const handleLogin =async () => {
+    // let parsed = await AsyncStorage.getItem('resp');  
+    // let users = JSON.parse(parsed);  
+    // let tokens = JSON.parse(parsed);
+    // const user=users.id
+    // const token=tokens.access
+
     const checkPassowrd = checkPasswordValidity(password);
     if (!checkPassowrd) {
       // handleGetToken()
       user_login({
         email: email.toLocaleLowerCase(),
         password: password,
+        // user: user
       })
-        .then( async (result) => {
-          // console.log("giid", result.data.access);
+        .then(async (result) => {
+        
           if (result.data.access) {
-            
-             await AsyncStorage.setItem('Bearer token', result.data.access);
-            alert("successful");
-            console.log("accesssss",result.data.access)
+            await AsyncStorage.setItem('resp',JSON.stringify (result.data));
+            //  await AsyncStorage.setItem('token', result.data.access);
+            console.log("accesssss",result.data.access);
+            console.log("login user id",result.data.id);
+            alert(result.data.message);
             navigation.replace('MyDrawer');
           }
+
+else{
+  alert(result.data.message);
+}
+
         })
         .catch(err => {
           console.error(err);
+         
         });
     } else {
       alert(checkPassowrd);
+      
     }
   };
-  useEffect(() => {
-    setTimeout(() => {
-      handleGetToken();
-    }, 2000);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     handleGetToken();
+  //   }, 2000);
+  // });
 
-  const handleGetToken = async () => {
-    const dataToken = await AsyncStorage.getItem('AccessToken');
-    if (!dataToken) {
-      // console.log("excellent");
-       console.log("giid", result.data.access);
-      navigation.replace('Login');
-    } else {
-      // navigation.replace('MyDrawer');
-      navigation.navigate('MyDrawer',{item:userToken});
-    }
-  };
+  // const handleGetToken = async () => {
+  //   const dataToken = await AsyncStorage.getItem('token');
+  //   if (!dataToken) {
+  //     // console.log("excellent");
+  //     //  console.log("giid", result.data.access);
+  //     navigation.replace('Login');
+  //   } else {
+  //     // navigation.replace('MyDrawer');
+  //     navigation.navigate('MyDrawer');
+  //   }
+  // };
  
   // const handleLogin = (resp) => {
   //   const checkPassowrd = checkPasswordValidity(password);
@@ -300,7 +315,7 @@ const handleCheckEmail = text => {
                         </View>
                         <View style={{ width: wp('45%') }}>
                             <TouchableOpacity style={{ alignSelf: 'flex-end' }} 
-                            onPress={()=>{ navigation.navigate("MyDrawer") }}
+                            onPress={()=>{ navigation.navigate("Forgot") }}
                             >
                                 <Text style={{ fontWeight: '480', color: '#F45CA5', fontWeight: 'bold', marginTop: ('3%') }}>
                                     Forget password?</Text>
@@ -484,10 +499,10 @@ export default Login;
   //       password: password,
   //     })
   //       .then(result => {
-  //         // console.log("giid", result.data.token);
-  //         if (result.data.token) {
+  //         // console.log("giid", token);
+  //         if (token) {
             
-  //           AsyncStorage.setItem('AccessToken', result.data.token);
+  //           AsyncStorage.setItem('AccessToken', token);
   //           console.log("accesssss",result.data.token)
   //           // navigation.replace('MyDrawer');
   //         }

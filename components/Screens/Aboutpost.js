@@ -16,10 +16,13 @@ import {
 import Input_1 from '../Input_1';
 import Eye from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignUp = props => {
   const {navigation, route} = props;
-  const [user, setUser] = useState(`${props.route.params.id}`);
+
+  
+  // const [user, setUser] = useState(`${props.route.params.id}`);
+  // const [user, setUser] = useState(dataToken);
   const [description, onChangeFname] = useState('');
   const [location, onChangeLname] = useState('');
   const [email, setEmail] = useState('');
@@ -30,17 +33,32 @@ const SignUp = props => {
   const [seePassword, setSeePassword] = useState(true);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
 
-  const postUser = () => {
+
+
+  const postUser =  async() => {
+    
+      // let token = dataToken.access
+      //  console.log("link token", dataToken);
+      //  console.log("link ", token);
+    // const dataToken = await AsyncStorage.getItem('user');
+    // const token = await AsyncStorage.getItem('access');
+    let parsed = await AsyncStorage.getItem('resp');  
+    let users = JSON.parse(parsed);  
+    let tokens = JSON.parse(parsed);
+    const user=users.id
+    const token=tokens.access
+    console.log("user",token) 
+    
+      //  const user= dataToken;
     const item = {user, description, location, email, workad_at, Studied_at};
     const requestOptions = {
-      method: 'POST',
+      method:'POST',
       headers: {
         'Content-Type': 'application/json',
         // 'Content-Type': 'multipart/form-data; ',
         // 'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1NzM0MzIyLCJpYXQiOjE2NjU3MzM3MjIsImp0aSI6Ijg3MjMyMDJhYzQ2MDQ3Y2E5MzQ4Y2U1YmZmMGE2MWYwIiwidXNlcl9pZCI6MX0.h3cmhYtD3pstWSRT1CFC4UHR5Ci-K_QgH2P06E9E_cY',
+        Authorization:`Bearer ${token}`,
       },
 
       body: JSON.stringify(item),
@@ -49,7 +67,7 @@ const SignUp = props => {
     fetch(
       // 'https://gorest.co.in/public/v1/users'
       //   'http://35.88.83.10/login/',
-      'http://10.0.2.2:8000/user_about/',
+      'http://35.90.113.221/user_about/',
       // `http://10.0.2.2:8000/user_about/${props.route.params.id}`,
       // 'http://35.90.113.221/register/',
       requestOptions,
@@ -57,12 +75,13 @@ const SignUp = props => {
       .then(result => result.json())
       .then(resp => {
         console.log('aboutpost ', resp);
-        if (resp) {
-          alert(resp.email);
-          navigation.navigate('Linkpost',{id:resp.id});
+        if (resp.user) {
+          alert("successful");
+          console.log(resp.user);
+          navigation.navigate('Linkpost',{id:resp.user});
         } else {
           alert('network error');
-        }
+      }
       })
       .catch(error => {
         console.error(error);

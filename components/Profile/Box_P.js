@@ -1,17 +1,24 @@
-import { StyleSheet, Text, View,ImageBackground,TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View,ImageBackground,TouchableOpacity, Image ,FlatList} from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import React ,{useState,useEffect} from 'react';
 import Person from 'react-native-vector-icons/Ionicons';
 import Heart from 'react-native-vector-icons/Entypo';
 import Right from 'react-native-vector-icons/Entypo';
 import Data_P from '../Profile/Data_P';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
    
 
 const Box_P = (props) => {
     const [blog, setBlog] = useState([]);
-    useEffect(() => {
+
+    const postUser = async () => {
+
+        let parsed = await AsyncStorage.getItem('resp');  
+     
+        let tokens = JSON.parse(parsed);
+        
+        const token=tokens.access
     const requestOptions = {
       method: 'GET',
       redirect: 'follow',
@@ -19,83 +26,124 @@ const Box_P = (props) => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1NzM0MzIyLCJpYXQiOjE2NjU3MzM3MjIsImp0aSI6Ijg3MjMyMDJhYzQ2MDQ3Y2E5MzQ4Y2U1YmZmMGE2MWYwIiwidXNlcl9pZCI6MX0.h3cmhYtD3pstWSRT1CFC4UHR5Ci-K_QgH2P06E9E_cY', 
+        Authorization: `Bearer ${token}`, 
+        
     },
     };
     fetch(
       // 'http://35.88.83.10/blog_view/',
-      'http://10.0.2.2:8000/user_profile_pic/',
+      'http://35.90.113.221/user_profile_pic/',
 
       requestOptions,
-    ).then(result => {
-        
-        result.json().then(resp => {
+    ).then(resp => {resp.json()
+        .then(resp => {
             console.log("image pic",resp);
         setBlog(resp);
       });
     });
-}, []);
-  return (
-    <View style={{ width: wp('90%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%'),elevation:5 }}>
-    {
-        blog.map =((item)=>   
-    <ImageBackground 
-        source={require('../../Images/cover_22.jpg')}
-        // source={{uri:item.backgound_image}}
-                          style={{justifyContent: 'center', alignItems: 'center',marginTop:('4%'),
-                                width: wp('90%'), height: hp('30%'), opacity: 150}}>
-            <TouchableOpacity>
-           
+}
+useEffect(() => {
+    postUser();
+  }, []);
 
-
-          
-                <Image 
-                source={require('../../Images/cover_22.jpg')} 
-                // source={{uri:item.images}}
-        
-                        style={{height: hp('15%'), width: wp('30%'), borderRadius: 70, borderColor: 'white'
-                                , borderWidth: wp('.5%')}} /> 
- 
-            </TouchableOpacity>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>{item.user}{props.username}</Text>
-            <Text style={{color: '#C4C4C4', fontWeight: 'bold', fontSize: 15}}>{props.pos}</Text>
-                        </ImageBackground>
-                        )}
-
-                        <View style={{ flexDirection: 'row', marginTop: ('4%'), marginBottom: ('4%'),}}>
-                        <View style={{width:wp('40%'),  flexDirection:'row',justifyContent:'center'}}>    
-                            <Person style={{
+//   return (
+//     <View style={{ width: wp('90%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%'),elevation:5 }}>
     
-                                backgroundColor: '#637381', borderRadius: 5
-                            }} size={18} name="person" color="white" />
-                            <TouchableOpacity style={{ marginLeft: ('4%') }}>
-                                <Text style={{color:'#637381'}}>Profile</Text>
-                            </TouchableOpacity>
-                            </View>
-                            <View style={{width:wp('40%'),  flexDirection:'row'}}>
-                            <Heart size={18}
-                                name="heart" color="#637381" />
-                            <TouchableOpacity style={{ marginLeft: ('4%') }}>
-                                <Text style={{color:'#637381'}}>Followers</Text>
-                            </TouchableOpacity>
-                            </View>
-                            <TouchableOpacity style={{}}>
-                                <Right size={18} name="chevron-right" color="#637381" />
-                            </TouchableOpacity>
-                        </View>
+//     <ImageBackground 
+//         // source={require('../../Images/cover_22.jpg')}l
+//         // source={{uri:'http://35.90.113.221' + item.backgound_image}}
+//         // source={{uri:'https://35.90.113.221'+item.images}}
+//                           style={{justifyContent: 'center', alignItems: 'center',marginTop:('4%'),
+//                                 width: wp('90%'), height: hp('30%'), opacity: 150}}>
+            
+//                                 {
+//                                     blog.map=((item)=> 
+//                                                         <TouchableOpacity>
+ 
+
+// <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>{item.username}dsdsds</Text>
+//                 <Image 
+//                 // source={require('../../Images/cover_22.jpg')} 
+//                 source={{uri:'http://35.90.113.221'+item.backgound_image}}
+//         style={{height: hp('15%'), width: wp('30%'), borderRadius: 70, borderColor: 'white'
+//                                 , borderWidth: wp('.5%')}} /> 
+
+           
+                                
+
+//             </TouchableOpacity>
+//             )}   
+            
+//             <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>{props.username}</Text>
+//             <Text style={{color: '#C4C4C4', fontWeight: 'bold', fontSize: 15}}>{props.pos}</Text>
+//                         </ImageBackground>
+                        
+
+//                         <View style={{ flexDirection: 'row', marginTop: ('4%'), marginBottom: ('4%'),}}>
+//                         <View style={{width:wp('40%'),  flexDirection:'row',justifyContent:'center'}}>    
+//                             <Person style={{
+    
+//                                 backgroundColor: '#637381', borderRadius: 5
+//                             }} size={18} name="person" color="white" />
+//                             <TouchableOpacity style={{ marginLeft: ('4%') }}>
+//                                 <Text style={{color:'#637381'}}>Profile</Text>
+//                             </TouchableOpacity>
+//                             </View>
+//                             <View style={{width:wp('40%'),  flexDirection:'row'}}>
+//                             <Heart size={18}
+//                                 name="heart" color="#637381" />
+//                             <TouchableOpacity style={{ marginLeft: ('4%') }}>
+//                                 <Text style={{color:'#637381'}}>Followers</Text>
+//                             </TouchableOpacity>
+//                             </View>
+//                             <TouchableOpacity style={{}}>
+//                                 <Right size={18} name="chevron-right" color="#637381" />
+//                             </TouchableOpacity>
+//                         </View>
+
+//                         <FlatList
+//                         style={{ width: 400}}
+                        
+//                         data={subSalonforWomen}
+                        
+//                         keyExtractor={item => item._id}
+                        
+//                         renderItem={({item}) => (
+                    
+//                     <View style={{ elevation:5,width: wp('91%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%') }}>
+                    
+//                     <View style={{ flexDirection: 'row', marginTop: ('8%'), marginLeft: ('5%') }}>
+//                     <TouchableOpacity style={{ width: wp('8%'), height: hp('3%'), }}>
+//                      <Image source={{uri:item.images}}style={{
+//                          height: hp('5%'), width: wp('10%'), borderRadius: 30,
+//                      }} />
+//                     </TouchableOpacity>
+                    
+                    
+                    
+                    
+//                     <Text style={{ fontSize: 16, marginTop: ('8%'), margin: ('5%'),color:'#637381'}}>{item.post_name}</Text>
+//                     <Image source={{uri:item.images}}
+//                     //  source={require('../../Images/feed_1.jpg')}
+//                     style={{
+//                      width: wp('81%'), height: hp('25%'), marginLeft: ('5%'),
+//                      borderRadius: 5
+//                     }} />
+//                     </View>
+                    
+//                         )}/>
+                    
+//                     </View>
+
+//   );
+// };
 
 
-                    </View>
-
-  );
-};
-
-const styles = StyleSheet.create({});
-export default Box_P;
+// export default Box_P;
 
 
 
-                            //********* */ ashir api code for user profile don tousch****************
+//                             ********* */ ashir api code for user profile don tousch****************
                             
 // import { StyleSheet, Text, View,ImageBackground,TouchableOpacity, Image ,FlatList} from 'react-native';
 // import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -129,63 +177,65 @@ export default Box_P;
 //       });
 //     }, []);
 
-//   return (
+  return (
+   
 
-
-//     <View style={{ width: wp('90%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%'),elevation:5 }}>
-//     <FlatList
-//     style={{ width: 400}}
+    <View style={{ width: wp('90%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%'),elevation:5 }}>
     
-//     data={subSalonforWomen}
+
+    <FlatList
+    style={{ width: 400}}
     
-//     keyExtractor={item => item._id}
+    data={blog}
     
-//     renderItem={({item}) => (
-//     <View>
-//          <ImageBackground source={{uri:item.backgound_image}}
-//                           style={{justifyContent: 'center', alignItems: 'center',marginTop:('4%'),
-//                             width: wp('90%'), height: hp('30%'), opacity: 150}}>
-//             <TouchableOpacity>
-//                 <Image source={{uri:item.images}}
-//                         style={{height: hp('15%'), width: wp('30%'), borderRadius: 70, borderColor: 'white'
-//                                 , borderWidth: wp('.5%')}} />
-//             </TouchableOpacity>
-//             <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>{item.user}</Text>
-//             <Text style={{color: '#C4C4C4', fontWeight: 'bold', fontSize: 15}}>{props.pos}</Text>
-//                         </ImageBackground>
-
-
-//                         <View style={{ flexDirection: 'row', marginTop: ('4%'), marginBottom: ('4%'),}}>
-//                         <View style={{width:wp('40%'),  flexDirection:'row',justifyContent:'center'}}>    
-//                             <Person style={{
+    keyExtractor={item => item._id}
     
-//                                 backgroundColor: '#637381', borderRadius: 5
-//                             }} size={18} name="person" color="white" />
-//                             <TouchableOpacity style={{ marginLeft: ('4%') }}>
-//                                 <Text style={{color:'#637381'}}>Profile</Text>
-//                             </TouchableOpacity>
-//                             </View>
-//                             <View style={{width:wp('40%'),  flexDirection:'row'}}>
-//                             <Heart size={18}
-//                                 name="heart" color="#637381" />
-//                             <TouchableOpacity style={{ marginLeft: ('4%') }}>
-//                                 <Text style={{color:'#637381'}}>Followers</Text>
-//                             </TouchableOpacity>
-//                             </View>
-//                             <TouchableOpacity style={{}}>
-//                                 <Right size={18} name="chevron-right" color="#637381" />
-//                             </TouchableOpacity>
-//                         </View>
+    renderItem={({item}) => (
+    <View>
+         <ImageBackground source={{uri:'http://35.90.113.221'+item.backgound_image}}
+                          style={{justifyContent: 'center', alignItems: 'center',marginTop:('4%'),
+                            width: wp('90%'), height: hp('30%'), opacity: 150}}>
+            <TouchableOpacity>
+                <Image source={{uri:'http://35.90.113.221'+item.images}}
+                        style={{height: hp('15%'), width: wp('30%'), borderRadius: 70, borderColor: 'white'
+                                , borderWidth: wp('.5%')}} />
+            </TouchableOpacity>
+            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>{item.user}</Text>
+            <Text style={{color: '#C4C4C4', fontWeight: 'bold', fontSize: 15}}>{props.pos}</Text>
+                        </ImageBackground>
 
 
-//                     </View>
-//                     )}
-// />
+                        <View style={{ flexDirection: 'row', marginTop: ('4%'), marginBottom: ('4%'),}}>
+                        <View style={{width:wp('40%'),  flexDirection:'row',justifyContent:'center'}}>    
+                            <Person style={{
+    
+                                backgroundColor: '#637381', borderRadius: 5
+                            }} size={18} name="person" color="white" />
+                            <TouchableOpacity style={{ marginLeft: ('4%') }}>
+                                <Text style={{color:'#637381'}}>Profile</Text>
+                            </TouchableOpacity>
+                            </View>
+                            <View style={{width:wp('40%'),  flexDirection:'row'}}>
+                            <Heart size={18}
+                                name="heart" color="#637381" />
+                            <TouchableOpacity style={{ marginLeft: ('4%') }}>
+                                <Text style={{color:'#637381'}}>Followers</Text>
+                            </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={{}}>
+                                <Right size={18} name="chevron-right" color="#637381" />
+                            </TouchableOpacity>
+                        </View>
 
-//                     </View>
-//   );
-// };
 
-// const styles = StyleSheet.create({});
-// export default Box_P;
+                    </View>
+                    )}
+/>
+
+                    </View>
+  );
+};
+
+const styles = StyleSheet.create({});
+export default Box_P;
 

@@ -3,52 +3,79 @@ import React ,{useState,useEffect} from 'react';
 import Commenting from 'react-native-vector-icons/FontAwesome';
 import Share from 'react-native-vector-icons/Entypo';
 import Eye from 'react-native-vector-icons/Ionicons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // This is our post component only not screen
 
 const Blog_Post = () => {
   const [blog, setBlog] = useState([]);
-
-  useEffect(() => {
-    const requestOptions = {
+      useEffect(() => {
+      postUser();
+    }, []);
+  
+  const postUser =async ()=> {
+    // const Token = await AsyncStorage.getItem('user');
+    //   const token = await AsyncStorage.getItem('access');
+    //      const user= dataToken;
+    //      const dataToken = await AsyncStorage.getItem('token');
+         let parsed = await AsyncStorage.getItem('resp');  
+         let users = JSON.parse(parsed);  
+         let tokens = JSON.parse(parsed);
+         const user=users.id
+         const token=tokens.access
+         console.log("user",token) 
+              
+        //  console.log("link token", dataToken);
+   const requestOptions = {
       method: 'GET',
       redirect: 'follow',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`, 
+        
+    },
       
     };
 
     fetch(
       // 'http://35.88.83.10/blog_view/',
-      'http://10.0.2.2:8000/blog_view/',
+      'http://35.90.113.221/blog_view/',
 
       requestOptions,
     ).then(resp => {
       resp.json().then(resp => {
-        console.log(resp);
+        console.log("ddd",resp);
         setBlog(resp);
+        // if (resp.user[100]) {
+        //   postUser(resp);
+        // }
       });
     });
-  }, []);
+  }
 
 
   return (
-    <View >
+    <View style={{  marginBottom:'15%',}}>
     <FlatList
-    style={{ width: 400}}
+    style={{ width: "100%"}}
     
     data={blog}
     
     keyExtractor={item => item._id}
-    listKey="YourListName"
+    // listKey="YourListName"
     renderItem={({item}) => 
     <View style={styles.main1}>
       <Image
         style={{
           width: '100%',
           height: 280,
+          margin:10,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
+        
         }}
-        source={require('../../Images/market.jpg')}
+        // source={require('../../Images/market.jpg')}
+        source={{uri:item.images}}
       />
       <Text style={{color: '#919EAB', marginTop: '10%', marginLeft: '5%'}}>
         {item.created_date}
@@ -68,7 +95,7 @@ const Blog_Post = () => {
           justifyContent: 'space-evenly',
           marginLeft: '40%',
           marginTop: '5%',
-          marginBottom: '5%',
+          
         }}>
         <TouchableOpacity style={{}}>
           <Commenting name="commenting" size={15} color="#637381" />
@@ -98,7 +125,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     elevation: 1,
-    marginBottom: 10,
+    marginBottom:'15%',
     borderRadius: 20,
   },
 });

@@ -18,10 +18,11 @@ const Drawer = createDrawerNavigator();
 const MyDrawer = () => {
   return (
    
-      <Drawer.Navigator screenOptions={{headerShown:false}} initialRouteName={{}}>
+      <Drawer.Navigator   screenOptions={{headerShown:false}} initialRouteName={{Posts}}>
+      <Drawer.Screen name="Posts" component={Posts} />
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="NewPost" component={NewPost} />
-      <Drawer.Screen name="Posts" component={Posts} />
+      
     
 
 

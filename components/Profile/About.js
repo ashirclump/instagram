@@ -5,31 +5,62 @@ import Location from 'react-native-vector-icons/Ionicons';
 import Email from 'react-native-vector-icons/MaterialIcons';
 import Bag from 'react-native-vector-icons/MaterialIcons';
 import Data_P from './Data_P';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const About = () => {
 
   const [subSalonforWomen, setSubSalonforWomen] = useState([]);
 
-    useEffect(() => {
+  const postUser = async () => {
+    // const dataToken = await AsyncStorage.getItem('user');
+    // const token = await AsyncStorage.getItem('access');
+    let parsed = await AsyncStorage.getItem('resp');  
+     
+    let tokens = JSON.parse(parsed);
+    
+    const token=tokens.access
+    // console.log("user",token) 
+      //  const user= dataToken;
       const requestOptions = {
         method: 'GET',
         redirect: 'follow',
-      };
+
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        
+          Authorization: `Bearer ${token}`,
+      },
+ };
   
       fetch(
           // 'http://35.88.83.10/user_about_view/',
-          'http://10.0.2.2:8000/user_about_view/',
+          'http://35.90.113.221/user_about_view/',
   
         requestOptions,
-      ).then(resp => {
-       
-          resp.json().then(resp => {
-            console.log(resp);
-          setSubSalonforWomen(resp);
+      ).then(respp => {
+        respp.json().then(async(respp)=> {
+          if (respp) {
+         
+            await AsyncStorage.setItem('respp', respp);
+            console.log(respp);
+            // alert(result.data.message);
+            alert(respp[0]);
+            console.log(respp[0].user);
+          
+            // navigation.replace('MyDrawer');
+          }
+          else{
+            alert("network error");
+          }          
+            console.log("about",respp);
+          setSubSalonforWomen(respp);
         });
       });
+    }
+    useEffect(() => {
+      postUser();
     }, []);
-
   return (
     <View style={styles.main}>
     <Text style={{

@@ -10,15 +10,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Links = () => {
     const [subSalonforWomen, setSubSalonforWomen] = useState([]);
-
-
-    useEffect(async () => {
-      
-        const dataToken = await AsyncStorage.getItem('token');
-       
-          // alert("appp successful");
-          //  console.log("apps", dataToken);
-            
+    const postUser = async () => {
+      let parsed = await AsyncStorage.getItem('resp');  
+     
+    let tokens = JSON.parse(parsed);
+    
+    const token=tokens.access
       const requestOptions = {
         method: 'GET',
         redirect: 'follow',
@@ -26,13 +23,13 @@ const Links = () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization:`Bearer ${dataToken}`, 
+        Authorization: `Bearer ${token}`, 
         
     },
       };
       fetch(
           // 'http://35.88.83.10/user_social_view/',
-          'http://10.0.2.2:8000/user_social_view/',
+          'http://35.90.113.221/user_social_view/',
           // 'http://192.168.1.11:8000/user_social_view/',
   
         requestOptions,
@@ -43,6 +40,9 @@ const Links = () => {
           setSubSalonforWomen(resp);
         });
       });
+    }
+    useEffect(() => {
+      postUser();
     }, []);
   return (
    <View style={{elevation:5, width: wp('91%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%') }}>

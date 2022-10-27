@@ -13,16 +13,16 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Input_1 from '../Input_1';
-import Eye from 'react-native-vector-icons/Ionicons';
+
 import axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignUp = props => {
   const {navigation, route} = props;
-  // const [user, setUser] = useState(`${props.route.params.id}`);
-  const [user, setUser] = useState(23);
-  const [facebook, onChangeFname] = useState('');
+  // const [user, setUser] = useState(35);
+ 
+  const [images, onChangeFname] = useState('');
+  const [backgound_image, onChangeLname] = useState('');
   const [uri, setUri] = useState(props.source?.uri || undefined);
   const openPicker = () => {
     ImagePicker.openPicker({
@@ -34,32 +34,84 @@ const SignUp = props => {
       props.onChange?.(image);
     });
 };
-  const postUser = () => {
-    const item = {user, facebook};
+// const [user, setUser] = useState( "  31");
+// console.log(props.route.params.id)
+//   const postUser = async () => {
+//     const dataToken = await AsyncStorage.getItem('user');
+//     const token = await AsyncStorage.getItem('access');
+   
+//     const user= dataToken;
+//     // const user = {user};
+//     const requestOptions = {
+      
+//       method: 'POST',
+//       headers: {
+//         // 'Content-Type':  'application/x-www-form-urlencoded',
+//         'Content-Type':  'application/json',
+//         // Accept: 'application/x-www-form-urlencoded',
+//         Authorization:
+//         `Bearer ${token}`},
+     
+//       // body: JSON.stringify ({user:"31"}),
+    
+//       body: JSON.stringify (user),
+//     };
+
+//     fetch(
+//       'http://35.90.113.221/user_profile_pic/',
+//        requestOptions,
+//     )
+//       .then(result => result.json())
+//       .then(resp => {
+//         console.log('profile pic ', resp);
+//         if (resp) {
+//           // alert(resp);
+//           navigation.navigate('MyDrawer');
+//         } else {
+//           alert('network error');
+//         }
+//       })
+//       .catch(error => {
+//         console.error(error);
+//       });
+//   };
+  const postUser = async () => {
+  //   const dataToken = await AsyncStorage.getItem('user');
+  // const token = await AsyncStorage.getItem('access');
+  
+  
+  //    const users= dataToken;
+     let parsed = await AsyncStorage.getItem('resp'); 
+     console.log('Linkpost ', parsed); 
+     let users = JSON.parse(parsed);  
+     let tokens = JSON.parse(parsed);
+     const id=users.id
+     console.log('Linkpost ',id);
+     const token=tokens.access
+     console.log('Linkpost ', token);
+    // const user = {users};
+    const item = {id};
     const requestOptions = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1NzM0MzIyLCJpYXQiOjE2NjU3MzM3MjIsImp0aSI6Ijg3MjMyMDJhYzQ2MDQ3Y2E5MzQ4Y2U1YmZmMGE2MWYwIiwidXNlcl9pZCI6MX0.h3cmhYtD3pstWSRT1CFC4UHR5Ci-K_QgH2P06E9E_cY',
+        Authorization:`Bearer ${token}`
       },
 
       body: JSON.stringify(item),
     };
 
     fetch(
-      
-      'http://10.0.2.2:8000/user_profile_pic_update/',
-      
+      'http://35.90.113.221/user_profile_pic/',
       requestOptions,
     )
       .then(result => result.json())
       .then(resp => {
-        console.log('profile pic ', resp);
+        console.log('Linkpost ', resp);
         if (resp) {
-          alert(resp.email);
-          navigation.navigate('Login');
+          alert("successful");
+          navigation.navigate('MyDrawer');
         } else {
           alert('network error');
         }
@@ -68,15 +120,6 @@ const SignUp = props => {
         console.error(error);
       });
   };
-
-  
-//   ImagePicker.openCamera({
-    
-//   }).then(image => {
-//     setUri(image.path);
-//     props.onChange?.(image);
-//   });
-
 
 
 
@@ -238,3 +281,287 @@ const styles = StyleSheet.create({
   },
 });
 export default SignUp;
+
+
+// import React, { useState } from 'react';
+// // Import core components
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   TouchableOpacity
+// } from 'react-native';
+// // import DocumentPicker from 'react-native-document-picker';
+// import DocumentPicker, { types } from 'react-native-document-picker';
+ 
+
+// const App = props => {
+//   const {navigation, route} = props;
+  
+//   const [singleFile, setSingleFile] = useState(59);
+//   const [user,onChangeUser] = useState(`${props.route.params.id}`);
+
+//   const uploadImage = async () => {
+//     // const item = {user};
+//     // Check if any file is selected or not
+//     if (singleFile != null) {
+//       // If file selected then create FormData
+//       const fileToUpload = singleFile;
+//       const images = new FormData();
+//       images.append('name', 'Image Upload',);
+//       images.append('file_attachment', fileToUpload,);
+//       // Please change file upload URL
+//       let res = await fetch(
+//         // 'http://35.90.113.221/create_blog/',
+//         'http://35.90.113.221/user_profile_pic/',
+//         {
+//           method: 'post',
+//           body:images,
+//           body: JSON.stringify(user),
+//           headers: {
+//             // 'Content-Type': 'multipart/form-data; ',
+//             'Media-Type': 'application/json ',
+          
+//                         Accept: 'application/json',
+//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MTY2ODc5LCJpYXQiOjE2NjYxNjYyNzksImp0aSI6ImJkNDc3MDg0ZWZlMTQ2NDc4MDRiMzYyZDEwZWJiNmFjIiwidXNlcl9pZCI6MTB9.feEn0uOaXgkLYivuUpO_YknBVDDdPBM9RKlyd0Si2N4',
+
+//           },
+//           headers: {
+//             // 'Content-Type': 'multipart/form-data; ',
+//             'Content-Type': 'application/json ',
+          
+//                         // Accept: 'application/json',
+//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MTY2ODc5LCJpYXQiOjE2NjYxNjYyNzksImp0aSI6ImJkNDc3MDg0ZWZlMTQ2NDc4MDRiMzYyZDEwZWJiNmFjIiwidXNlcl9pZCI6MTB9.feEn0uOaXgkLYivuUpO_YknBVDDdPBM9RKlyd0Si2N4',
+
+//           },
+         
+//         }
+//       );
+//       let responseJson = await res.json();
+//       if (responseJson) {
+//         alert('Upload Successful');
+//         console.log(responseJson);
+//       }
+//     } else {
+//       // If no file selected the show alert
+//       alert('Please Select File first');
+//     }
+//   };
+ 
+//   const selectFile = async () => {
+//     // Opening Document Picker to select one file
+//     try {
+//       // const user=59;
+//       const res = await DocumentPicker.pick({
+//         // Provide which type of file you want user to pick
+//         type: [DocumentPicker.types.images],
+//         // There can me more options as well
+//         // DocumentPicker.types.allFiles
+//         // DocumentPicker.types.images,
+//         // DocumentPicker.types.plainText
+//         // DocumentPicker.types.audio
+//         // DocumentPicker.types.pdf
+//       });
+//       // Printing the log realted to the file
+//       const user ="59";
+//       console.log(user);
+//       console.log('res : ' + JSON.stringify(res[0].uri));
+//       // Setting the state to show single file attributes
+//       setSingleFile(res[0].uri);
+//     } catch (err) {
+//       setSingleFile(null);
+//       // Handling any exception (If any)
+//       if (DocumentPicker.isCancel(err)) {
+//         // If user canceled the document selection
+//         alert('Canceled');
+//       } else {
+//         // For Unknown Error
+//         alert('Unknown Error: ' + JSON.stringify(err));
+//         throw err;
+//       }
+//     }
+//   };
+//   return (
+//     <View style={styles.mainBody}>
+//       <View style={{ alignItems: 'center' }}>
+//         <Text style={{ fontSize: 30, textAlign: 'center' }}>
+//           React Native File Upload Example
+//         </Text>
+//         <Text
+//           style={{
+//             fontSize: 25,
+//             marginTop: 20,
+//             marginBottom: 30,
+//             textAlign: 'center',
+//           }}>
+//           www.aboutreact.com
+//         </Text>
+//       </View>
+//       {/*Showing the data of selected Single file*/}
+//       {singleFile != null ? (
+//         <Text style={styles.textStyle}>
+//           File Name: {singleFile.name ? singleFile.name : ''}
+//           {'\n'}
+//           Type: {singleFile.type ? singleFile.type : ''}
+//           {'\n'}
+//           File Size: {singleFile.size ? singleFile.size : ''}
+//           {'\n'}
+//           URI: {singleFile.uri ? singleFile.uri : ''}
+//           {'\n'}
+//         </Text>
+//       ) : null}
+//       <TouchableOpacity
+//         style={styles.buttonStyle}
+//         activeOpacity={0.5}
+//         onPress={selectFile}>
+//         <Text style={styles.buttonTextStyle}>Select File</Text>
+//       </TouchableOpacity>
+//       <TouchableOpacity
+//         style={styles.buttonStyle}
+//         activeOpacity={0.5}
+//         onPress={uploadImage}>
+//         <Text style={styles.buttonTextStyle}>Upload File</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+ 
+// const styles = StyleSheet.create({
+//   mainBody: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     padding: 20,
+//   },
+//   buttonStyle: {
+//     backgroundColor: '#307ecc',
+//     borderWidth: 0,
+//     color: '#FFFFFF',
+//     borderColor: '#307ecc',
+//     height: 40,
+//     alignItems: 'center',
+//     borderRadius: 30,
+//     marginLeft: 35,
+//     marginRight: 35,
+//     marginTop: 15,
+//   },
+//   buttonTextStyle: {
+//     color: '#FFFFFF',
+//     paddingVertical: 10,
+//     fontSize: 16,
+//   },
+//   textStyle: {
+//     backgroundColor: '#fff',
+//     fontSize: 15,
+//     marginTop: 16,
+//     marginLeft: 35,
+//     marginRight: 35,
+//     textAlign: 'center',
+//   },
+// });
+ 
+// export default App;
+
+// import React, {useState} from 'react';
+// // import {Header, Image} from 'react-native-elements';
+// import {StyleSheet, View, ActivityIndicator, Platform,Image,TouchableOpacity,Text} from 'react-native';
+// // import { TouchableOpacity } from 'react-native-gesture-handler';
+// // import defaultAvatar from './profile.png';
+// // import ImagePicker from 'react-native-image-crop-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
+
+// const createFormData = (photo, body) => {
+ 
+//   const data = new FormData();
+
+//   data.append('photo', {
+//     name: photo.fileName,
+//     type: photo.type,
+//     uri:
+//       Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
+//   });
+
+//   Object.keys(body).forEach((key) => {
+//     data.append(key, body[key]);
+//   });
+
+//   return data;
+// };
+
+// const App = () => {
+//   const defaultAvatar = require('../../Images/Capture.png');
+//   const [avatar, setAvatar] = useState(defaultAvatar);
+//   const [title, setTitle] = useState('Profile Photo');
+//   const handlePicker = () => {
+//     ImagePicker.openPicker({
+//       width: 300,
+//       height: 300,
+//       cropping: true,
+//     }, (response) => {
+//       console.log('Response = ', response);
+
+//       if (response.didCancel) {
+//         console.log('User cancelled image picker');
+//       } else if (response.error) {
+//         console.log('ImagePicker Error: ', response.error);
+//       } else if (response.customButton) {
+//         console.log('User tapped custom button: ', response.customButton);
+//       } else {
+//         setAvatar({uri: response.uri});
+//         setTitle('Updating...'); // image start to upload on server so on header set text is 'Updating..'
+//         fetch('http://35.90.113.221/user_profile_pic/', {
+//           method: 'POST',
+//           headers: new Headers({
+//             'Content-Type': 'application/x-www-form-urlencoded', //Specifying the Content-Type
+//           }),
+//           body: createFormData(response, {id: '123'}),
+//         })
+//           .then((data) => data.json())
+//           .then((res) => {
+//             console.log('upload succes', res);
+//             setTitle('Profile Photo');
+//             setAvatar({uri: response.image});
+//           })
+//           .catch((error) => {
+//             console.log('upload error', error);
+//             setTitle('Profile Photo');
+//           });
+//       }
+//     });
+//   };
+
+//   return (
+//     <View>
+      
+//       <View style={styles.imageContainer}>
+//         <Image
+//           source={avatar}
+//           // PlaceholderContent={<ActivityIndicator />}
+//           // style=
+//         />
+//         <TouchableOpacity  style ={{height:20,width:20,backgroundColor:'red'}}onPress={handlePicker}>
+//         <Text>good</Text></TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     height: '100%',
+//   },
+//   imageContainer: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   headerText: {
+//     color: '#fff',
+//     fontSize: 20,
+//   },
+//   body: {flex: 1},
+// });
+
+// export default App;

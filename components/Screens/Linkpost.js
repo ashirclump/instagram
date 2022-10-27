@@ -14,47 +14,56 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
   import Input_1 from '../Input_1';
-  import Eye from 'react-native-vector-icons/Ionicons';
-  import axios from 'axios';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
   
   const SignUp = props => {
     const {navigation, route} = props;
+    // console.log(props.route.params.id);
     // const [user, setUser] = useState(`${props.route.params.id}`);
-    const [user, setUser] = useState(23);
+    // const [user, setUser] = useState(`${props.route.params.id}`);
     const [facebook, onChangeFname] = useState('');
     const [instagram, onChangeLname] = useState('');
     const [linkedin, setEmail] = useState('');
     const [twitter, onChangeUser] = useState('');
     const [checkValidEmail, setCheckValidEmail] = useState(false);
   
-    const postUser = () => {
+    const postUser = async () => {
+    //   const dataToken = await AsyncStorage.getItem('user');
+    // const token = await AsyncStorage.getItem('access');
+    
+    
+    //    const user= dataToken;
+
+       let parsed = await AsyncStorage.getItem('resp');  
+       let users = JSON.parse(parsed);  
+       let tokens = JSON.parse(parsed);
+       const user=users.id
+       const token=tokens.access
+
+      //  console.log("user",token) 
       const item = {user, facebook, instagram, linkedin, twitter};
       const requestOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY1NzM0MzIyLCJpYXQiOjE2NjU3MzM3MjIsImp0aSI6Ijg3MjMyMDJhYzQ2MDQ3Y2E5MzQ4Y2U1YmZmMGE2MWYwIiwidXNlcl9pZCI6MX0.h3cmhYtD3pstWSRT1CFC4UHR5Ci-K_QgH2P06E9E_cY',
-        },
+          Authorization:`Bearer ${token}`},
   
         body: JSON.stringify(item),
       };
   
       fetch(
-        // 'https://gorest.co.in/public/v1/users'
-        //   'http://35.88.83.10/login/',
-        'http://10.0.2.2:8000/user_social/',
-        // `http://10.0.2.2:8000/user_about/${props.route.params.id}`,
-        // 'http://35.90.113.221/register/',
+        'http://35.90.113.221/user_social/',
         requestOptions,
       )
         .then(result => result.json())
         .then(resp => {
           console.log('Linkpost ', resp);
-          if (resp) {
-            alert(resp.email);
-            navigation.navigate('Pic');
+          if (resp.user) {
+            alert("successful");
+            navigation.navigate('Pic'
+            // ,{id:resp.user}
+            );
           } else {
             alert('network error');
           }
@@ -164,4 +173,6 @@ import {
     },
   });
   export default SignUp;
+  
+
   
