@@ -1,17 +1,15 @@
 
-
-
-
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  SafeAreaView,
   ScrollView,
+  TextInput,
   ImageBackground,
   TouchableOpacity,
+  Button,
   Switch,
+  Image,
 } from 'react-native';
 import React, {useState} from 'react';
 import Header from '../Header';
@@ -19,7 +17,7 @@ import Heading1 from '../Profile/Heading1';
 import Data_P from '../Profile/Data_P';
 import Underline from 'react-native-vector-icons/Feather';
 import List from 'react-native-vector-icons/FontAwesome';
-import Image from 'react-native-vector-icons/Entypo';
+import Change from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -29,9 +27,27 @@ import {
 import Input_2 from '../Input_2';
 import Input from '../Input';
 import ImagePicker from 'react-native-image-crop-picker';
+import axios from 'axios';
+import { DocumentPickerOptions } from 'react-native-document-picker';
+ 
+ 
+import { launchImageLibrary } from 'react-native-image-picker';
+
+
 
 
  
+const options={
+  
+  title: 'Select Image',
+  type: 'library',
+  options: {
+    selectionLimit: 0,
+    mediaType: 'photo',
+    includeBase64: false,
+  },
+  
+}
   const NewPost = props => {
     const {navigation, route} = props;
   const [post_name, onChangePost] = useState('');
@@ -42,164 +58,98 @@ import ImagePicker from 'react-native-image-crop-picker';
   const [blog_name, onChangeLname] = useState('');
   // const [user,onChangeUser] = useState(10);
   const [users,onChangeUsers] = useState('');
-  const [uri, setUri] = useState(props.source?.uri || undefined);
-  
+  const [uri, setUri] = useState("");
+  const [images, setImages] = useState('');
   // const [user, setUser] = useState(`${props.route.params.id}`);
   // const [images, setImages] = useState({
   //   uri: `data:${image};base64,${image}`,
   // });
+  // const [Mypic, setMypic] = useState({uri: `data:${image.mime};base64,${image.data}`});
  
+const open =async () => {
+  const imagesss = await launchImageLibrary(options)
  
-  const [singleFile, setSingleFile] = useState('');
+      setUri(imagesss.assets);
+      
+      
+  setImages(imagesss);
+//  console.log(imagesss.assets[0])
+ 
+
+}
+const postUser=async () => {
+ let parsed = await AsyncStorage.getItem('resp');  
+         
+        
+          let tokens = JSON.parse(parsed);
+        
+          const token=tokens.access
+          
+
+
+let userparsed = await AsyncStorage.getItem('response');  
+       let users = JSON.parse(userparsed); 
+      
+
+       const user=users[0].user
+
+
+ const formdata= new FormData()
+ formdata.append('images', 
+ {
+   uri:images.assets[0].uri,
+   type:images.assets[0].type,
+   name:images.assets[0].fileName
+
+ })
+ formdata.append('user',user),
+ formdata.append('blog_name',blog_name),
+ formdata.append('tag_name',tag_name)
+ let res = await fetch(
+   'http://35.90.113.221/create_blog/',
+   {
+     method: 'post',
+     body: formdata,
+     headers: {
+       'Content-Type': 'multipart/form-data',
+     Authorization:  `Bearer ${token}`
+     },
+   }
+ );
+ let responseJson = await res.json();
+ console.log("responseJson",responseJson)
+ if (responseJson.user) {
+
+          // alert("successful post");
+        
+          navigation.navigate('Posts');
+        }
+          else{
+            // alert("filled all the fields");
+          }              
+      
+
+ }
+
+
+  // const [images, setImages] = useState(props.source?.images || undefined);
+//   const openPicker = () => {
+//     ImagePicker.openPicker({
+//       // width: 300,
+//       // height: 300,
+//       // cropping: true,
+//       includeBase64: true
+//     }).then(image => {
+//       setUri(image.path);
+//       // setMypic(image);
+//       setImages(image.path);
+//       console.log(image.path);
+//       props.onChange?.(image);
+//     });
+// };
   
 
 
-  const [image, setImage] = useState(null);
-const [uploading, setUploading] = useState(false);
-const [transferred, setTransferred] = useState(0);
-
-
-
-  const [images, setImages] = useState(props.source?.images || undefined);
-  const openPicker = () => {
-    ImagePicker.openPicker({
-      // width: 300,
-      // height: 300,
-      // cropping: true,
-    }).then(image => {
-      setUri(image.path);
-      setImages(image.mime);
-      console.log(image);
-      props.onChange?.(image);
-    });
-};
-  
-
-
-const postUser =async ()=> {
-  // const dataToken = await AsyncStorage.getItem('user');
-  //   const token = await AsyncStorage.getItem('access');
-  //   const oken = await AsyncStorage.getItem('token');
-  //      const user= dataToken;
-      //  const dataToken = await AsyncStorage.getItem('token');
-      const cool = await AsyncStorage.getItem('respp');  
-      console.log("ddd",cool)
-      // resp[0].user
-      // let newest = JSON.parse(parsed);
-      // const user=users.id
-      // const dd=newest.user
-      // console.log(user)
-      // console.log(token)
-
-       let parsed = await AsyncStorage.getItem('resp');  
-      //  let users = JSON.parse(parsed);  
-       console.log(parsed)
-       let tokens = JSON.parse(parsed);
-       const user=users.id
-       const token=tokens.access
-       console.log(user)
-       console.log(token)
-      
-  const item ={post_name,
-    tag_name,
-    blog_name,
-    user,
-    post_header,
-    post_content,
-    };
-    // console.log(item);
-    
-  const requestOptions = {
-    method: 'POST',
-    redirect: 'follow',
-
-    headers: {
-      'Content-Type': 'application/json;',
-          Accept: 'application/json',
-      Authorization:  `Bearer ${token}`},
-   
-   
-    body: JSON.stringify (item)
-  };
-
-  fetch(
-   
-  'http://35.90.113.221/create_blog/',
-  // 'http://35.90.113.221/register/',
-    requestOptions,
-  )
-    .then(result => result.json())
-    .then(resp => {
-      console.log('newpost ', resp)
-      if (resp.user) {
-
-        alert("successful post");
-      
-        navigation.navigate('Posts');
-      }
-        else{
-          alert("filled all the fields");
-        }              
-                  
-    })
-    .catch(error => {
-      console.error(error);
-    });
-};
-
-  // this is our post screen
-
-  // const Input = props => {
-  //   return (
-  //     <View
-  //       style={{
-  //         width: wp('85%'),
-  //         marginTop: '5%',
-  //         // marginLeft: '3%',
-  //         height: hp('15%'),
-  //         borderRadius: 10,
-  //         borderWidth: 1.5,
-  //         borderColor: '#ECECEC',
-  //         fontSize: 15,
-  //       }}>
-  //       <TextInput
-  //         placeholderTextColor={'#C4C4C4'}
-  //         placeholder={props.place}
-  //         multiline={true}
-  //         onChangeText={props.change}
-  //         value={props.val}
-  //       />
-  //     </View>
-  //   );
-  // };
-
-  // const Input_2 = props => {
-  //   return (
-  //     <View>
-  //       <TextInput
-  //         // style={props.whi}
-  //         autoCapitalize="none"
-  //         autoCorrect={false}
-  //         placeholder={props.title}
-  //         placeholderTextColor={'#C4C4C4'}
-  //         backgroundColor="white"
-  //         onChangeText={props.changed}
-  //         value={props.vale}
-  //         style={{
-  //           borderColor: 'black',
-  //           borderRadius: 10,
-  //           // marginLeft: '3%',
-  //           height: hp('7.7%'),
-  //           fontSize: 15,
-  //           marginTop: '4%',
-  //           borderWidth: 1.5,
-  //           width: wp('85%'),
-  //           borderColor: '#ECECEC',
-  //         }}
-  //       />
-  //     </View>
-  //   );
-  // };
 
   const Toggle = props => {
     const [isEnabled, setIsEnabled] = useState(false);
@@ -231,10 +181,7 @@ const postUser =async ()=> {
       </View>
     );
   };
-
-  // main
-
-  return (
+ return (
     
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{padding: '5%'}}>
@@ -253,9 +200,7 @@ const postUser =async ()=> {
               
             />
             <Input place="Description" change={onChangeLname} val={blog_name} />
-
-            <Text style={styles.title}>Content</Text>
-
+              <Text style={styles.title}>Content</Text>
             <View
               style={{
                 backgroundColor: 'white',
@@ -283,7 +228,7 @@ const postUser =async ()=> {
                   marginTop: '2%',
                 }}>
                 <List size={25} name="list-ol" color="green" solid />
-                <Image size={25} name="image" color="black" solid />
+                <Change size={25} name="image" color="black" solid />
                 <Icon size={25} name="format-clear" color="black" solid />
 
                 <Icon size={25} name="theaters" color="black" solid />
@@ -315,17 +260,9 @@ const postUser =async ()=> {
                 <ImageBackground
                   // source={require('../../Images/Drag.png')}
                   style={styles.avatar}
-                  // {...props}
-                    source={uri ? {uri} : props.source}
-                    // source={{uri:images}}
-                  // style={{
-                  //   justifyContent: 'center',
-                  //   alignItems: 'center',
-                  //   marginTop: '4%',
-                  //   width: wp('50%'),
-                  //   height: hp('20%'),
-                  //   opacity: 150,
-                  // }}
+                  
+                    source={uri}
+                   
                   ></ImageBackground>
               </View>
               <View>
@@ -343,7 +280,7 @@ const postUser =async ()=> {
                 <Text
                   style={{
                     fontSize: 15,
-                    marginTop: '5%',
+                    // marginTop: '5%',
                     marginLeft: '8%',
                     alignSelf: 'center',
                   }}>
@@ -356,10 +293,12 @@ const postUser =async ()=> {
                     marginHorizontal: '1%',
                   }}>
                   click here to
-                  <TouchableOpacity onPress={openPicker}>
+                  <TouchableOpacity 
+                  style={{fontSize: 15,marginTop:2}}
+                  onPress={open}>
                   <Text
-                    style={{color: '#F45CA5', textDecorationLine: 'underline'}}>
-                    browse
+                    style={{color: '#F45CA5', textDecorationLine: 'underline',fontSize: 15}}>
+                     browse 
                   </Text>
                   </TouchableOpacity>
                   through your machine
@@ -467,15 +406,15 @@ const styles = StyleSheet.create({
     // alignSelf:'flex-end'
   },
   avatar: {
-    height: 110,
-    width: 110,
+    height: 150,
+    width: '95%',
+    borderRadius: '24%',
     justifyContent: 'center',
-    borderRadius: 80,
     marginTop: '4%',
-    marginBottom: 20,
+    // marginBottom: 20,
     alignContent: 'center',
     alignSelf: 'center',
-    //  marginLeft:15
+     marginLeft:15
    
   },
   default: {
@@ -497,6 +436,158 @@ export default NewPost;
 
  
 
+// const postUser =async ()=> {
+//   const handleSubmit = async(e) => {
+//        let parsed = await AsyncStorage.getItem('resp');  
+//        let users = JSON.parse(parsed);  
+//       //  console.log("neweeeee",parsed)
+//        let tokens = JSON.parse(parsed);
+//        const user=99
+//        const token=tokens.access
+//       //  console.log("iddddddd",user)
+//       //  console.log(token)
+
+
+      
+
+//   // e.preventDefault();
+//   // console.log(this.state);
+//   let form_data = new FormData();
+//   form_data.append('images', images);
+//   form_data.append('title', blog_name);
+//   form_data.append('content', tag_name);
+//   form_data.append('user', user);
+//    console.log("iddddddd",user)
+//   let url = 'http://35.90.113.221/create_blog/';
+//   axios.post(url, form_data, {
+//     headers: {
+//       'content-type': 'multipart/form-data',
+//       Accept: 'application/json',
+//       Authorization:  `Bearer ${token}`
+//     }
+//   })
+//       .then(res => {
+//         console.log(res.data);
+//       })
+//       .catch(err => console.log(err))
+// };
+      
+//   const item ={post_name,
+//     tag_name,
+//     blog_name,
+//     user,
+//     images,
+//     post_header,
+//     post_content,
+//     };
+//     // console.log(item);
+//     let form_data = new FormData();
+//     if (images)
+//         form_data.append("image_url", images);
+//     form_data.append("title", blog_name);
+//     form_data.append("description",tag_name);
+//     form_data.append("category", user);
+//       console.log("iddddddeeed",user)
+//     // form_data.append("start_bid", data.start_bid);
+//     // form_data.append("is_active", true);
+//   const requestOptions = {
+//     method: 'POST',
+//     redirect: 'follow',
+
+//     headers: {
+//       'Content-Type': 'application/json;',
+//           Accept: 'application/json',
+//       Authorization:  `Bearer ${token}`},
+   
+   
+//     body: JSON.stringify (form_data)
+//   };
+
+//   fetch(
+   
+//   'http://35.90.113.221/create_blog/',
+//   // 'http://35.90.113.221/register/',
+//     requestOptions,
+//   )
+//     .then(result => result.json())
+//     .then(resp => {
+//       console.log('newpost ', resp)
+//       if (resp.user) {
+
+//         alert("successful post");
+      
+//         // navigation.navigate('Posts');
+//       }
+//         else{
+//           alert("filled all the fields");
+//         }              
+                  
+//     })
+//     .catch(error => {
+//       console.error(error);
+//     });
+// };
+
+
+
+  // this is our post screen
+
+  // const Input = props => {
+  //   return (
+  //     <View
+  //       style={{
+  //         width: wp('85%'),
+  //         marginTop: '5%',
+  //         // marginLeft: '3%',
+  //         height: hp('15%'),
+  //         borderRadius: 10,
+  //         borderWidth: 1.5,
+  //         borderColor: '#ECECEC',
+  //         fontSize: 15,
+  //       }}>
+  //       <TextInput
+  //         placeholderTextColor={'#C4C4C4'}
+  //         placeholder={props.place}
+  //         multiline={true}
+  //         onChangeText={props.change}
+  //         value={props.val}
+  //       />
+  //     </View>
+  //   );
+  // };
+
+  // const Input_2 = props => {
+  //   return (
+  //     <View>
+  //       <TextInput
+  //         // style={props.whi}
+  //         autoCapitalize="none"
+  //         autoCorrect={false}
+  //         placeholder={props.title}
+  //         placeholderTextColor={'#C4C4C4'}
+  //         backgroundColor="white"
+  //         onChangeText={props.changed}
+  //         value={props.vale}
+  //         style={{
+  //           borderColor: 'black',
+  //           borderRadius: 10,
+  //           // marginLeft: '3%',
+  //           height: hp('7.7%'),
+  //           fontSize: 15,
+  //           marginTop: '4%',
+  //           borderWidth: 1.5,
+  //           width: wp('85%'),
+  //           borderColor: '#ECECEC',
+  //         }}
+  //       />
+  //     </View>
+  //   );
+  // };
+
+
+
+
+
 // import React, { useState } from 'react';
 // // Import core components
 // import {
@@ -505,95 +596,55 @@ export default NewPost;
 //   View,
 //   TouchableOpacity
 // } from 'react-native';
-// // import DocumentPicker from 'react-native-document-picker';
-// import DocumentPicker, { types } from 'react-native-document-picker';
- 
 
-// const App = props => {
-//   const {navigation, route} = props;
+  // const uploadImage = async () => {
+  //   const item={user};
+  //   // data.append('file_attachment', user);
+  //   console.log("idddddddyyyy",user);
+  //   let parsed = await AsyncStorage.getItem('resp');  
+  //         //  let users = JSON.parse(parsed);  
+  //         //  console.log("neweeeee",parsed)
+  //          let tokens = JSON.parse(parsed);
+  //         //  const user=99
+  //          const token=tokens.access
+  //          console.log("iddddddd",user)
+        
+   
+  //     const images = singleFile;
+  //     const data = new FormData();
+  //     data.append('file_attachment', images);
+     
+  //     fetch(
+  //       'http://35.90.113.221/create_blog/',
+  //       {
+  //         method: 'post',
+  //         body: data,
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data; ',
+  //           // 'Content-Type': 'application/json',
+  //           Accept: 'application/json',
+  //           Authorization:  `Bearer ${token}`
+  //         },
+  //         body: JSON.stringify(item),
+  //         headers: {
+  //           'Content-Type': 'application/json ',
+  //           // 'Content-Type': 'application/json',
+  //           Accept: 'application/json',
+  //           Authorization:  `Bearer ${token}`
+  //         },
+  //       }
+  //     )
+  //     .then((response) => response.json())
+  //           .then((response) => {
+  //             console.log('response', response);
+  //           })
+  //           .catch((error) => {
+  //             console.log('error', error);
+  //           });
+  //       };
   
-//   const [singleFile, setSingleFile] = useState(59);
-//   const [user,onChangeUser] = useState(`${props.route.params.id}`);
-
-//   const uploadImage = async () => {
-//     // const item = {user};
-//     // Check if any file is selected or not
-//     if (singleFile != null) {
-//       // If file selected then create FormData
-//       const fileToUpload = singleFile;
-//       const images = new FormData();
-//       images.append('name', 'Image Upload',);
-//       images.append('file_attachment', fileToUpload,);
-//       // Please change file upload URL
-//       let res = await fetch(
-//         'http://35.90.113.221/create_blog/',
-//         {
-//           method: 'post',
-//           body:images,
-//           body: ({user:59,images}),
-//           headers: {
-//             'Content-Type': 'multipart/form-data; ',
-//             // 'Content-Type': 'application/json ',
-          
-//                         Accept: 'application/json',
-//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MDE0MzczLCJpYXQiOjE2NjYwMTM3NzMsImp0aSI6ImQ3YTUzZWUwMmIzMDRlMzViZjY4MTYzNzYwOTA5Zjc0IiwidXNlcl9pZCI6NTl9.PxAZ9yYQRmQKR4TXGSRRMuLb8iyTVzJiG6VJUEWxkzE',
-
-//           },
-//           headers: {
-//             // 'Content-Type': 'multipart/form-data; ',
-//             'Content-Type': 'application/json ',
-          
-//                         // Accept: 'application/json',
-//                     Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY2MDE0MzczLCJpYXQiOjE2NjYwMTM3NzMsImp0aSI6ImQ3YTUzZWUwMmIzMDRlMzViZjY4MTYzNzYwOTA5Zjc0IiwidXNlcl9pZCI6NTl9.PxAZ9yYQRmQKR4TXGSRRMuLb8iyTVzJiG6VJUEWxkzE',
-
-//           },
-         
-//         }
-//       );
-//       let responseJson = await res.json();
-//       if (responseJson) {
-//         alert('Upload Successful');
-//         console.log(responseJson);
-//       }
-//     } else {
-//       // If no file selected the show alert
-//       alert('Please Select File first');
-//     }
-//   };
  
-//   const selectFile = async () => {
-//     // Opening Document Picker to select one file
-//     try {
-//       // const user=59;
-//       const res = await DocumentPicker.pick({
-//         // Provide which type of file you want user to pick
-//         type: [DocumentPicker.types.allFiles],
-//         // There can me more options as well
-//         // DocumentPicker.types.allFiles
-//         // DocumentPicker.types.images
-//         // DocumentPicker.types.plainText
-//         // DocumentPicker.types.audio
-//         // DocumentPicker.types.pdf
-//       });
-//       // Printing the log realted to the file
-//       const user ="59";
-//       console.log(user);
-//       console.log('res : ' + JSON.stringify(res));
-//       // Setting the state to show single file attributes
-//       setSingleFile(res,user);
-//     } catch (err) {
-//       setSingleFile(null);
-//       // Handling any exception (If any)
-//       if (DocumentPicker.isCancel(err)) {
-//         // If user canceled the document selection
-//         alert('Canceled');
-//       } else {
-//         // For Unknown Error
-//         alert('Unknown Error: ' + JSON.stringify(err));
-//         throw err;
-//       }
-//     }
-//   };
+  
 //   return (
 //     <View style={styles.mainBody}>
 //       <View style={{ alignItems: 'center' }}>
@@ -610,35 +661,17 @@ export default NewPost;
 //           www.aboutreact.com
 //         </Text>
 //       </View>
-//       {/*Showing the data of selected Single file*/}
-//       {singleFile != null ? (
-//         <Text style={styles.textStyle}>
-//           File Name: {singleFile.name ? singleFile.name : ''}
-//           {'\n'}
-//           Type: {singleFile.type ? singleFile.type : ''}
-//           {'\n'}
-//           File Size: {singleFile.size ? singleFile.size : ''}
-//           {'\n'}
-//           URI: {singleFile.uri ? singleFile.uri : ''}
-//           {'\n'}
-//         </Text>
-//       ) : null}
+      
+      
 //       <TouchableOpacity
 //         style={styles.buttonStyle}
 //         activeOpacity={0.5}
-//         onPress={selectFile}>
-//         <Text style={styles.buttonTextStyle}>Select File</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity
-//         style={styles.buttonStyle}
-//         activeOpacity={0.5}
-//         onPress={uploadImage}>
+//         onPress={open}>
 //         <Text style={styles.buttonTextStyle}>Upload File</Text>
 //       </TouchableOpacity>
 //     </View>
 //   );
 // };
- 
 // const styles = StyleSheet.create({
 //   mainBody: {
 //     flex: 1,

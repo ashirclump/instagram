@@ -60,12 +60,13 @@ import {
         .then(resp => {
           console.log('Linkpost ', resp);
           if (resp.user) {
-            alert("successful");
+            
+            // alert("successful");
             navigation.navigate('Pic'
             // ,{id:resp.user}
             );
           } else {
-            alert('network error');
+            // alert('network error');
           }
         })
         .catch(error => {

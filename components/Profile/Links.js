@@ -28,15 +28,14 @@ const Links = () => {
     },
       };
       fetch(
-          // 'http://35.88.83.10/user_social_view/',
+          
           'http://35.90.113.221/user_social_view/',
-          // 'http://192.168.1.11:8000/user_social_view/',
-  
         requestOptions,
       ).then(resp => {
-          resp.json().then(resp => {
+          resp.json().then(async (resp) => {
             // console.log('links',datatoken);
             console.log('links',resp);
+            await AsyncStorage.setItem('response',JSON.stringify (resp));
           setSubSalonforWomen(resp);
         });
       });

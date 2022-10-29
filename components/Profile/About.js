@@ -40,21 +40,22 @@ const About = () => {
         requestOptions,
       ).then(respp => {
         respp.json().then(async(respp)=> {
+           setSubSalonforWomen(respp)
           if (respp) {
-         
-            await AsyncStorage.setItem('respp', respp);
-            console.log(respp);
+           
+            await AsyncStorage.setItem('respp',JSON.stringify(respp));
+            // console.log(respp);
             // alert(result.data.message);
-            alert(respp[0]);
-            console.log(respp[0].user);
-          
+            // alert(respp[0].user);
+            // console.log(respp[0].user);
+           
             // navigation.replace('MyDrawer');
           }
           else{
-            alert("network error");
+            // alert("network error");
           }          
             console.log("about",respp);
-          setSubSalonforWomen(respp);
+          
         });
       });
     }
@@ -96,7 +97,7 @@ const About = () => {
 
             <View style={styles.link}>
                 <Bag size={18} name="shopping-bag" color="#637381" solid />
-                <Text style={styles.txt}>Manager at</Text>
+                <Text style={styles.txt}>Worked at</Text>
                 <Text style={styles.txt1}>{item.workad_at}</Text>
             </View>
 

@@ -15,113 +15,135 @@ import {
 } from 'react-native-responsive-screen';
 
 import axios from 'axios';
-import ImagePicker from 'react-native-image-crop-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+const options={
+  
+  title: 'Select Image',
+  type: 'library',
+  options: {
+    selectionLimit: 0,
+    mediaType: 'photo',
+    includeBase64: false,
+  },
+  
+}
 const SignUp = props => {
   const {navigation, route} = props;
   // const [user, setUser] = useState(35);
  
-  const [images, onChangeFname] = useState('');
+  // const [images, onChangeFname] = useState('');
   const [backgound_image, onChangeLname] = useState('');
-  const [uri, setUri] = useState(props.source?.uri || undefined);
-  const openPicker = () => {
-    ImagePicker.openPicker({
-      // width: 300,
-      // height: 300,
-      // cropping: true,
-    }).then(image => {
-      setUri(image.path);
-      props.onChange?.(image);
-    });
-};
-// const [user, setUser] = useState( "  31");
-// console.log(props.route.params.id)
-//   const postUser = async () => {
-//     const dataToken = await AsyncStorage.getItem('user');
-//     const token = await AsyncStorage.getItem('access');
-   
-//     const user= dataToken;
-//     // const user = {user};
-//     const requestOptions = {
+  const [uri, setUri] = useState('');
+  const [uriTwo, setUriTwo] = useState('');
+  // const [uri, setUri] = useState(props.source?.uri || undefined);
+//   const openPicker = () => {
+//     ImagePicker.openPicker({
+//       // width: 300,
+//       // height: 300,
+//       // cropping: true,
+//     }).then(image => {
+//       setUri(image.path);
+//       props.onChange?.(image);
+//     });
+// };
+
+
+const [images, setImages] = useState('');
+const [imageTwo, setImagesTwo] = useState('');
+// const [user, setUser] = useState(`${props.route.params.id}`);
+// const [images, setImages] = useState({
+//   uri: `data:${image};base64,${image}`,
+// });
+// const [Mypic, setMypic] = useState({uri: `data:${image.mime};base64,${image.data}`});
+
+const openTwo =async () => {
+  const imageTwo = await launchImageLibrary(options)
+  
+      setUriTwo(imageTwo.assets);
       
-//       method: 'POST',
-//       headers: {
-//         // 'Content-Type':  'application/x-www-form-urlencoded',
-//         'Content-Type':  'application/json',
-//         // Accept: 'application/x-www-form-urlencoded',
-//         Authorization:
-//         `Bearer ${token}`},
-     
-//       // body: JSON.stringify ({user:"31"}),
+      
+  setImagesTwo(imageTwo);
+  //  console.log(imagesss.assets[0])
+  
+  
+  }
+
+
+const open =async () => {
+const imagesss = await launchImageLibrary(options)
+
+    setUri(imagesss.assets);
     
-//       body: JSON.stringify (user),
-//     };
-
-//     fetch(
-//       'http://35.90.113.221/user_profile_pic/',
-//        requestOptions,
-//     )
-//       .then(result => result.json())
-//       .then(resp => {
-//         console.log('profile pic ', resp);
-//         if (resp) {
-//           // alert(resp);
-//           navigation.navigate('MyDrawer');
-//         } else {
-//           alert('network error');
-//         }
-//       })
-//       .catch(error => {
-//         console.error(error);
-//       });
-//   };
-  const postUser = async () => {
-  //   const dataToken = await AsyncStorage.getItem('user');
-  // const token = await AsyncStorage.getItem('access');
-  
-  
-  //    const users= dataToken;
-     let parsed = await AsyncStorage.getItem('resp'); 
-     console.log('Linkpost ', parsed); 
-     let users = JSON.parse(parsed);  
-     let tokens = JSON.parse(parsed);
-     const id=users.id
-     console.log('Linkpost ',id);
-     const token=tokens.access
-     console.log('Linkpost ', token);
-    // const user = {users};
-    const item = {id};
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization:`Bearer ${token}`
-      },
-
-      body: JSON.stringify(item),
-    };
-
-    fetch(
-      'http://35.90.113.221/user_profile_pic/',
-      requestOptions,
-    )
-      .then(result => result.json())
-      .then(resp => {
-        console.log('Linkpost ', resp);
-        if (resp) {
-          alert("successful");
-          navigation.navigate('MyDrawer');
-        } else {
-          alert('network error');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
+    
+setImages(imagesss);
+//  console.log(imagesss.assets[0])
 
 
+}
+const postUser=async () => {
+let parsed = await AsyncStorage.getItem('resp');  
+        let users = JSON.parse(parsed);  
+        console.log("neweeeee",parsed)
+        let tokens = JSON.parse(parsed);
+        const user=users.id
+        const token=tokens.access
+        console.log("iddddddd",user)
+
+const formdata= new FormData()
+formdata.append('images', 
+{
+ uri:images.assets[0].uri,
+ type:images.assets[0].type,
+ name:images.assets[0].fileName
+
+})
+
+formdata.append('backgound_image', 
+{
+ uri:imageTwo.assets[0].uri,
+ type:imageTwo.assets[0].type,
+ name:imageTwo.assets[0].fileName
+
+})
+formdata.append('user',user)
+let res = await fetch(
+ 'http://35.90.113.221/user_profile_pic/',
+ {
+   method: 'post',
+   body: formdata,
+   headers: {
+     'Content-Type': 'multipart/form-data',
+   Authorization:  `Bearer ${token}`
+   },
+ }
+);
+let responseJson = await res.json();
+console.log("responseJson",responseJson)
+if (responseJson.user) {
+  handleLogout()
+        // alert("successful post");
+      
+        // navigation.navigate('Posts');
+      }
+        else{
+          // alert("filled all the fields");
+        }              
+    
+
+}
+
+const handleLogout = async () => {
+  const dataToken = await AsyncStorage.getItem('resp');
+  if (!dataToken) {
+    console.log("logout",dataToken);
+} else {
+      AsyncStorage.clear();
+      navigation.navigate('Posts');
+  }
+};
 
   return (
     <SafeAreaView>
@@ -137,19 +159,7 @@ const SignUp = props => {
           {/* <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 16, marginBottom: 13 }}> */}
           <View style={styles.row}>
             <TouchableOpacity>
-              <View
-                style={{
-                 
-                  height: 180,
-                  width: 180,
-                  borderRadius: 100,
-                  marginTop: '10%',
-                  justifyContent: 'center',
-                 borderWidth:2,
-                 alignContent:'center',
-                 alignSelf:'center',
-                  borderColor:"#F45CA5"
-                }}>
+              <View style={styles.circles}>
                 <Text
                   style={{position: 'absolute', alignSelf: 'center',color:"black",fontSize:50}}
                 > + </Text>
@@ -157,22 +167,49 @@ const SignUp = props => {
                   style={{color: 'black', fontSize: 16, top: 130, width: 400}}>
                   {props.title}
                 </Text>
-                <TouchableOpacity onPress={openPicker}>
+                <TouchableOpacity onPress={open}>
                   <Image
                     style={styles.avatar}
-                    {...props}
-                    source={uri ? {uri} : props.source}
+                    // {...props}
+                    // source={uri ? {uri} : props.source}
+                    source={uri}
                   />
                 </TouchableOpacity>
+                <Text style={{ alignSelf: 'center',color:"black",fontSize:15}}>
+                Profile Pic</Text>
               </View>
             </TouchableOpacity>
           </View>
+
+         
+          <TouchableOpacity>
+            <View
+              style={styles.circleTwo}>
+              <Text
+                style={{position: 'absolute', alignSelf: 'center',color:"black",fontSize:50}}
+              > + </Text>
+              <Text
+                style={{color: 'black', fontSize: 16, top: 130, width: 400}}>
+                {props.title}
+              </Text>
+              <TouchableOpacity onPress={openTwo}>
+                <Image
+                  style={styles.avatarTwo}
+                
+                  source={uriTwo}
+                />
+              </TouchableOpacity>
+              <Text style={{ alignSelf: 'center',color:"black",fontSize:15}}>
+              Background image</Text>
+            </View>
+          </TouchableOpacity>
+       
           <TouchableOpacity
-            onPress={() => postUser()}
+            onPress={() =>postUser()}
             style={{
               backgroundColor: '#F45CA5',
               borderRadius: 10,
-              marginTop: '70%',
+              marginTop: '10%',
               height: hp('8%'),
             }}>
             <Text
@@ -248,17 +285,51 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   avatar: {
-    height: 110,
-    width: 110,
-    justifyContent: 'center',
+    height: "90%",
+    width: '90%',
+    // justifyContent: 'center',
     borderRadius: 80,
     marginBottom: 20,
-    alignContent: 'center',
+    // alignContent: 'center',
     alignSelf: 'center',
-    //  marginLeft:15
+     marginTop:10
+  },
+  avatarTwo: {
+    height: '90%',
+    width: '100%',
+    // justifyContent: 'center',
+   
+    marginBottom: 20,
+    // alignContent: 'center',
+    alignSelf: 'center',
+     marginTop:10
   },
 
   row: {},
+circles:{
+  height: 180,
+  width: 180,
+  borderRadius: 100,
+  marginTop: '10%',
+  justifyContent: 'center',
+ borderWidth:2,
+ alignContent:'center',
+ alignSelf:'center',
+  borderColor:"#F45CA5"
+},
+circleTwo:{
+  height: 180,
+  width: '100%',
+ 
+  marginTop: '10%',
+  justifyContent: 'center',
+ borderWidth:2,
+ alignContent:'center',
+ alignSelf:'center',
+  borderColor:"#F45CA5"
+},
+
+
   modalcontainer: {
     // flex: 1,
 

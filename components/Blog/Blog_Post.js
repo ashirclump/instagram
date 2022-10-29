@@ -6,7 +6,7 @@ import Eye from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // This is our post component only not screen
 
-const Blog_Post = () => {
+const Blog_Post = (props) => {
   const [blog, setBlog] = useState([]);
       useEffect(() => {
       postUser();
@@ -44,7 +44,7 @@ const Blog_Post = () => {
       requestOptions,
     ).then(resp => {
       resp.json().then(resp => {
-        console.log("ddd",resp);
+        console.log("postdetailss",resp);
         setBlog(resp);
         // if (resp.user[100]) {
         //   postUser(resp);
@@ -58,14 +58,16 @@ const Blog_Post = () => {
     <View style={{  marginBottom:'15%',}}>
     <FlatList
     style={{ width: "100%"}}
-    
+   
     data={blog}
     
-    keyExtractor={item => item._id}
+    keyExtractor={item => item.user}
     // listKey="YourListName"
     renderItem={({item}) => 
+    
     <View style={styles.main1}>
-      <Image
+    <TouchableOpacity  onPress={() => props.navigation.navigate("PostDetail")}>
+    <Image
         style={{
           width: '100%',
           height: 280,
@@ -76,7 +78,7 @@ const Blog_Post = () => {
         }}
         // source={require('../../Images/market.jpg')}
         source={{uri:item.images}}
-      />
+      /></TouchableOpacity>  
       <Text style={{color: '#919EAB', marginTop: '10%', marginLeft: '5%'}}>
         {item.created_date}
       </Text>

@@ -174,13 +174,13 @@ const postUser = ()=> {
           await AsyncStorage.setItem('resp',JSON.stringify (resp));
         
           // alert(result.data.message);
-          alert(resp.message);
-          console.log(resp.id);
+          // alert(resp.message);
+          // console.log(resp.id);
           navigation.navigate('Aboutpost');
           // navigation.replace('MyDrawer');
         }
         else{
-          alert("network error");
+          // alert("network error");
         }              
                   
     })

@@ -20,9 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignUp = props => {
   const {navigation, route} = props;
 
-  
-  // const [user, setUser] = useState(`${props.route.params.id}`);
-  // const [user, setUser] = useState(dataToken);
   const [description, onChangeFname] = useState('');
   const [location, onChangeLname] = useState('');
   const [email, setEmail] = useState('');
@@ -33,31 +30,19 @@ const SignUp = props => {
   const [seePassword, setSeePassword] = useState(true);
   const [checkValidEmail, setCheckValidEmail] = useState(false);
 
-
-
-  const postUser =  async() => {
-    
-      // let token = dataToken.access
-      //  console.log("link token", dataToken);
-      //  console.log("link ", token);
-    // const dataToken = await AsyncStorage.getItem('user');
-    // const token = await AsyncStorage.getItem('access');
+  const postUser =  async() => { 
     let parsed = await AsyncStorage.getItem('resp');  
     let users = JSON.parse(parsed);  
     let tokens = JSON.parse(parsed);
     const user=users.id
     const token=tokens.access
     console.log("user",token) 
-    
-      //  const user= dataToken;
     const item = {user, description, location, email, workad_at, Studied_at};
     const requestOptions = {
       method:'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'Content-Type': 'multipart/form-data; ',
-        // 'Content-Type': 'application/json',
-        Accept: 'application/json',
+       Accept: 'application/json',
         Authorization:`Bearer ${token}`,
       },
 
@@ -65,22 +50,19 @@ const SignUp = props => {
     };
 
     fetch(
-      // 'https://gorest.co.in/public/v1/users'
-      //   'http://35.88.83.10/login/',
+  
       'http://35.90.113.221/user_about/',
-      // `http://10.0.2.2:8000/user_about/${props.route.params.id}`,
-      // 'http://35.90.113.221/register/',
+     
       requestOptions,
     )
       .then(result => result.json())
       .then(resp => {
         console.log('aboutpost ', resp);
         if (resp.user) {
-          alert("successful");
-          console.log(resp.user);
+          // console.log(resp.user);
           navigation.navigate('Linkpost',{id:resp.user});
         } else {
-          alert('network error');
+          console.log('network error');
       }
       })
       .catch(error => {
@@ -152,9 +134,7 @@ const SignUp = props => {
               Next
             </Text>
           </TouchableOpacity>
-
-          
-        </View>
+          </View>
       </ScrollView>
     </SafeAreaView>
   );

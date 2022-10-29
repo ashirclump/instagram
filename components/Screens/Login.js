@@ -20,6 +20,7 @@ const Login = ({ navigation }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [seePassword, setSeePassword] = useState(true);
       const [checkValidEmail, setCheckValidEmail] = useState(false);
+      const [t, setT] = useState();
      
 // const postUser = ()=> {
 //        const requestOptions = {
@@ -197,12 +198,12 @@ const handleCheckEmail = text => {
             //  await AsyncStorage.setItem('token', result.data.access);
             console.log("accesssss",result.data.access);
             console.log("login user id",result.data.id);
-            alert(result.data.message);
+            setT(result.data.message);
             navigation.replace('MyDrawer');
           }
 
 else{
-  alert(result.data.message);
+  setT(result.data.message); // alert(result.data.message);
 }
 
         })
@@ -211,7 +212,7 @@ else{
          
         });
     } else {
-      alert(checkPassowrd);
+      setT(checkPassowrd);
       
     }
   };
@@ -300,8 +301,9 @@ else{
                         onPress={() => setSeePassword(!seePassword)} >
                             <Eye name={seePassword === false ? "eye-sharp" : "eye-off-sharp"} size={20} color="#7E8B98" solid />
                         </TouchableOpacity>
+                       
                     </View>
-
+                    <Text style={styles.textFa}> {t}</Text>
                     <View style={{ flexDirection: 'row', width: wp('90%'), marginTop: ('15%') }}>
                         <View style={{ flexDirection: 'row', width: wp('45%'), }}>
                             <CheckBox
@@ -416,6 +418,10 @@ const styles = StyleSheet.create({
       },
       textFailed: {
         alignSelf: 'flex-end',
+        color: 'red',
+      },
+      textFa: {
+        alignSelf: 'center',
         color: 'red',
       },
 

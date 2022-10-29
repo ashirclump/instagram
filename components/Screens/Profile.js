@@ -18,21 +18,21 @@ import Links from '../Profile/Links';
 import { SettingsTwoTone } from '@material-ui/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
+import Blog_Post from '../Blog/Blog_Post'
 
 const Profile = ({props,navigation}) => {
     const [subSalonforWomen, setSubSalonforWomen] = useState([]);
     const [two, setTwo] = useState([]);
 
    
-        useEffect(async () => {
-      
+       
+            const postUser = async () => {
             let parsed = await AsyncStorage.getItem('resp');  
      
     let tokens = JSON.parse(parsed);
     
     const token=tokens.access
-            
+              console.log('links',token);
       const requestOptions = {
         method: 'GET',
         redirect: 'follow',
@@ -45,29 +45,50 @@ const Profile = ({props,navigation}) => {
       };
   
       fetch(
-          'http://35.90.113.221/post_view_user/',
+          'http://35.90.113.221/post_view/',
          requestOptions,
-      ).then(resp => {
-       resp.json().then(resp => {
-            console.log('postview',resp);
+         ).then(resp => {
+            resp.json().then(resp => {
+              console.log('links',resp);
           setSubSalonforWomen(resp);
           setTwo(resp[0])
         });
       });
-    }, []);
+    }
+    useEffect(() => {
+        postUser();
+      }, []);
     
     const handleLogout = async () => {
         const dataToken = await AsyncStorage.getItem('resp');
         if (!dataToken) {
           console.log("logout",dataToken);
-          
-        } else {
-          
+     } else {
+            AsyncStorage.clear();
+            navigation.navigate('Login');
+           
         }
-        AsyncStorage.clear();
-        navigation.navigate('Login');
-
       };
+
+
+
+    //   const handleLogout = async function () {
+    //     return await resp.User.logOut()
+    //       .then(async () => {
+           
+    //         const currentUser = await resp.User.currentAsync('resp');
+    //         if (currentUser === null) {
+    //           Alert.alert('Success!', 'No user is logged in anymore!');
+    //         }
+            
+    //         navigation.dispatch(StackActions.popToTop());
+    //         return true;
+    //       })
+    //       .catch((error) => {
+    //         Alert.alert('Error!', error.message);
+    //         return false;
+    //       });
+    //   };
       
   return (
     <SafeAreaView>
@@ -105,14 +126,15 @@ const Profile = ({props,navigation}) => {
                 keyExtractor={item => item._id}
                 
                 renderItem={({item}) => (
-
+                    
      <View style={{ elevation:5,width: wp('91%'), backgroundColor: 'white', borderRadius: 20, marginTop: ('8%') }}>
-
+    
      <View style={{ flexDirection: 'row', marginTop: ('8%'), marginLeft: ('5%') }}>
          <TouchableOpacity style={{ width: wp('8%'), height: hp('3%'), }}>
              <Image source={{uri:item.images}}style={{
                  height: hp('5%'), width: wp('10%'), borderRadius: 30,
              }} />
+            
          </TouchableOpacity>
          <View style={{ marginLeft: ('5%') }}>
              <TouchableOpacity>

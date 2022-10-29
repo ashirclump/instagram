@@ -29,6 +29,11 @@ const Data_P = [
         sName:'Blog',
         userName:'posts',
         
+    },{
+        h1:'Post Details',
+        sName:'Blog',
+        userName:'posts',
+        
     }
 
 

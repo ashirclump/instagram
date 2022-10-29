@@ -9,6 +9,7 @@ import Login from './Screens/Login';
 import SignUp from './Screens/SignUp';
 import Profile from './Screens/Profile';
 import Blog_Post from './Blog/Blog_Post';
+import PostDetail from './Blog/PostDetail';
 
 
 
@@ -22,6 +23,7 @@ const MyDrawer = () => {
       <Drawer.Screen name="Posts" component={Posts} />
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="NewPost" component={NewPost} />
+      <Drawer.Screen name="PostDetail" component={PostDetail} />
       
     
 
